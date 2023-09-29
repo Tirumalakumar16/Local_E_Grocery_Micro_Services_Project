@@ -116,7 +116,7 @@ public class ProductServiceImpl implements ProductService{
         List<Product> products = productRepository.findByEmailId(emailId);
 
         if(products.isEmpty()) {
-            throw new ProductsNotAvailableWithProductAndSellerEmail("Provided product doesn't exists with ");
+            throw new ProductsNotAvailableWithProductAndSellerEmail("Products are not updated with your email and  products doesn't exists with "+emailId);
         }
 
         return Arrays.asList(modelMapper.map(products, ResponseProductDto[].class));
