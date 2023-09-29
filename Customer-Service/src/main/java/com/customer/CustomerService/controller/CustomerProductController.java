@@ -3,6 +3,7 @@ package com.customer.CustomerService.controller;
 import com.customer.CustomerService.dtos.RequestProductDto;
 import com.customer.CustomerService.service.CustomerService;
 import com.products.ProductService.dtos.ResponseProductCustDto;
+import com.products.ProductService.exceptions.ProductsNotAvailableWithShopName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +21,7 @@ public class CustomerProductController {
         this.customerService = customerService;
     }
     @GetMapping("/customer/product")
-    public List<ResponseProductCustDto> getProductByShopName(@RequestBody RequestProductDto requestProductDto) {
+    public List<ResponseProductCustDto> getProductByShopName(@RequestBody RequestProductDto requestProductDto) throws ProductsNotAvailableWithShopName {
 
         return customerService.getByShopName(requestProductDto.getShopName());
     }

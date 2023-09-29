@@ -1,6 +1,7 @@
 package com.customer.CustomerService.controller;
 
 import com.cartservice.CartService.dtos.ResponseCartDto;
+import com.cartservice.CartService.exceptions.CartDetailsNotFound;
 import com.customer.CustomerService.dtos.RequestAddressCustDto;
 import com.customer.CustomerService.dtos.order.ResponseCustOrderDto;
 import com.customer.CustomerService.exceptions.CartServiceUpdationException;
@@ -23,7 +24,7 @@ public class CustomerOrderController {
         this.customerService = customerService;
     }
     @PostMapping("/customer/order")
-    public String order(@RequestHeader("LoggedInUser") String userName,@RequestBody RequestAddressCustDto addressCustDto) throws AddressNotFoundWithEmail, CartServiceUpdationException {
+    public String order(@RequestHeader("LoggedInUser") String userName,@RequestBody RequestAddressCustDto addressCustDto) throws AddressNotFoundWithEmail, CartServiceUpdationException, CartDetailsNotFound {
 
         return customerService.order(userName,addressCustDto);
     }

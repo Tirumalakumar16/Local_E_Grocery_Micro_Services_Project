@@ -25,36 +25,31 @@ public class AddressController {
     }
 
     @GetMapping("/addresses/{email}")
-    public List<ResponseAddressDto> getAddresses(@PathVariable("email")String emailId) {
+    public List<ResponseAddressDto> getAddresses(@PathVariable("email")String emailId) throws AddressNotFoundWithEmail {
 
-        List<ResponseAddressDto> address =null;
-        try {
-           address = addressService.getAddress(emailId);
-            return address;
-        } catch (AddressNotFoundWithEmail e) {
-            System.out.println(e.getMessage());
-        }
-        return address;
+
+           return addressService.getAddress(emailId);
+
     }
 
     @DeleteMapping("/address")
-    public String deleteAddress(@RequestBody DeleteAddressRequest deleteAddress) {
+    public String deleteAddress(@RequestBody DeleteAddressRequest deleteAddress) throws AddressNotFoundWithEmail {
 
         return addressService.deleteAddress(deleteAddress);
     }
 
     @PutMapping("/address")
-    public ResponseAddressDto updateAddress(@RequestBody UpdateAddressRequest updateAddressRequest) {
+    public ResponseAddressDto updateAddress(@RequestBody UpdateAddressRequest updateAddressRequest) throws AddressNotFoundWithEmail {
 
         return addressService.updateAddress(updateAddressRequest);
     }
     @GetMapping("/address/{email}/{houseNumber}/{zip}")
-    public ResponseAddressDto getByZipAddress(@PathVariable("email") String email,@PathVariable("houseNumber") String houseNumber,@PathVariable("zip") String zip) {
+    public ResponseAddressDto getByZipAddress(@PathVariable("email") String email,@PathVariable("houseNumber") String houseNumber,@PathVariable("zip") String zip) throws AddressNotFoundWithEmail {
 
         return addressService.getByZipAddress(email,houseNumber,zip);
     }
     @GetMapping("/address/{houseNumber}")
-    public ResponseAddressDto getByHouseNumber(@PathVariable("houseNumber") String houseNumber) {
+    public ResponseAddressDto getByHouseNumber(@PathVariable("houseNumber") String houseNumber) throws AddressNotFoundWithEmail {
 
         return addressService.getByHouseNumber(houseNumber);
     }

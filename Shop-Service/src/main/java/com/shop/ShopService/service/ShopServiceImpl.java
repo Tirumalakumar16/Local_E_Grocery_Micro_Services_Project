@@ -7,6 +7,7 @@ import com.orders.OrdersService.exceptions.OrdersNotPlacedException;
 import com.products.ProductService.dtos.RequestOwnerDto;
 import com.products.ProductService.dtos.RequestProductDto;
 import com.products.ProductService.dtos.ResponseProductDto;
+import com.products.ProductService.exceptions.ProductsNotAvailableWithProductAndSellerEmail;
 import com.shop.ShopService.dtos.RequestShopDtos;
 import com.shop.ShopService.dtos.ResponseShopCustDto;
 import com.shop.ShopService.dtos.ResponseShopDto;
@@ -142,7 +143,7 @@ public class ShopServiceImpl implements ShopService{
 
 
     @Override
-    public List<ResponseProductDto> getAllProducts(String userName) throws UserNotFound {
+    public List<ResponseProductDto> getAllProducts(String userName) throws UserNotFound, ProductsNotAvailableWithProductAndSellerEmail {
         IdentityResponseDto identityResponseDto = identityFeignClient.getUserCredentials(userName);
 
         List<String> auth = Arrays.stream(identityResponseDto.getRoles().split(",")).toList();
@@ -155,7 +156,7 @@ public class ShopServiceImpl implements ShopService{
 
 
     @Override
-    public ResponseProductDto updateProduct(String userName, RequestOwnerDto requestOwnerDto) throws UserNotAutherizedException {
+    public ResponseProductDto updateProduct(String userName, RequestOwnerDto requestOwnerDto) throws UserNotAutherizedException, ProductsNotAvailableWithProductAndSellerEmail {
         IdentityResponseDto identityResponseDto = identityFeignClient.getUserCredentials(userName);
         List<String> owner = Arrays.stream(identityResponseDto.getRoles().split(",")).toList();
 
