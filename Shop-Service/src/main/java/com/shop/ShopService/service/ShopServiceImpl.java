@@ -1,0 +1,192 @@
+package com.shop.ShopService.service;
+
+import com.identityservice.dtos.IdentityResponseDto;
+import com.ktkapp.addressservice.dtos.ResponseAddressDto;
+import com.orders.OrdersService.dtos.ResponseOrderDto;
+import com.orders.OrdersService.exceptions.OrdersNotPlacedException;
+import com.products.ProductService.dtos.RequestOwnerDto;
+import com.products.ProductService.dtos.RequestProductDto;
+import com.products.ProductService.dtos.ResponseProductDto;
+import com.shop.ShopService.dtos.RequestShopDtos;
+import com.shop.ShopService.dtos.ResponseShopCustDto;
+import com.shop.ShopService.dtos.ResponseShopDto;
+import com.shop.ShopService.dtos.product.RequestProductShopDto;
+import com.shop.ShopService.exceptions.ShopIsNotFoundException;
+import com.shop.ShopService.exceptions.UserNotAutherizedException;
+import com.shop.ShopService.exceptions.UserNotFound;
+import com.shop.ShopService.feignclients.AddressFeignClient;
+import com.shop.ShopService.feignclients.IdentityFeignClient;
+import com.shop.ShopService.feignclients.OrderFeignClient;
+import com.shop.ShopService.feignclients.ProductFeignClient;
+import com.shop.ShopService.models.Shop;
+import com.shop.ShopService.repository.ShopRepository;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.print.DocFlavor;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+@Service
+public class ShopServiceImpl implements ShopService{
+
+    private ShopRepository shopRepository;
+
+    private ModelMapper modelMapper;
+
+    private IdentityFeignClient identityFeignClient;
+
+    private AddressFeignClient addressFeignClient;
+
+    private ProductFeignClient productFeignClient;
+    private OrderFeignClient orderFeignClient;
+
+    @Autowired
+    public ShopServiceImpl(ShopRepository shopRepository, ModelMapper modelMapper, IdentityFeignClient identityFeignClient, AddressFeignClient addressFeignClient, ProductFeignClient productFeignClient, OrderFeignClient orderFeignClient) {
+        this.shopRepository = shopRepository;
+        this.modelMapper = modelMapper;
+        this.identityFeignClient = identityFeignClient;
+        this.addressFeignClient = addressFeignClient;
+        this.productFeignClient = productFeignClient;
+        this.orderFeignClient = orderFeignClient;
+    }
+
+    @Override
+    public ResponseShopDto saveShop(RequestShopDtos requestShopDtos,String userName) throws UserNotFound {
+        IdentityResponseDto identityResponseDto = identityFeignClient.getUserCredentials(userName);
+
+        List<String> owner = Arrays.stream(identityResponseDto.getRoles().split(",")).toList();
+
+        if(owner.contains("ROLE_CUSTOMER")){
+            throw new UserNotFound("You dont have access to upload a shop, please signup as owner...");
+        }
+        ResponseAddressDto responseAddressDto = addressFeignClient.getAddresses(identityResponseDto.getEmailId()).get(0);
+
+        Shop shop = mapToShop(requestShopDtos,responseAddressDto,identityResponseDto);
+
+        Shop shop1 = shopRepository.save(shop);
+
+        return modelMapper.map(shop1, ResponseShopDto.class);
+
+    }
+    private Shop mapToShop(RequestShopDtos requestShopDtos,ResponseAddressDto responseAddressDto,IdentityResponseDto identityResponseDto) {
+        Shop shop = new Shop();
+
+        shop.setShopName(requestShopDtos.getShopName());
+        shop.setCity(responseAddressDto.getCity());
+        shop.setActive(true);
+        shop.setMobile(requestShopDtos.getMobile());
+        shop.setOwnerName(requestShopDtos.getOwnerName());
+        shop.setProductsRegistered(0);
+        shop.setRegisteredOn(new Date());
+        shop.setUpdatedOn(new Date());
+        shop.setEmailId(identityResponseDto.getEmailId());
+        return shop;
+    }
+
+
+    @Override
+    public List<ResponseShopDto> getAll(String userName) throws UserNotAutherizedException {
+        IdentityResponseDto identityResponseDto = identityFeignClient.getUserCredentials(userName);
+        List<String> owner = Arrays.stream(identityResponseDto.getRoles().split(",")).toList();
+
+        if(owner.contains("ROLE_CUSTOMER") && owner.size() == 1) {
+            throw new UserNotAutherizedException("You dont have access to get a shops, please signup as owner...  "+identityResponseDto.getEmailId());
+        }
+        List<Shop> shops = shopRepository.findAll();
+
+        return Arrays.asList(modelMapper.map(shops, ResponseShopDto[].class));
+    }
+
+    @Override
+    public List<ResponseShopCustDto> findByCity(String city) {
+
+        List<Shop> shops = shopRepository.findByCity(city);
+
+        return Arrays.asList(modelMapper.map(shops, ResponseShopCustDto[].class));
+    }
+
+
+    @Override
+    public ResponseProductDto saveProduct(RequestProductShopDto requestProductDto, String userName) throws UserNotFound {
+
+        IdentityResponseDto identityResponseDto = identityFeignClient.getUserCredentials(userName);
+        Shop shop = shopRepository.findByEmailId(identityResponseDto.getEmailId());
+
+
+        List<String> auth = Arrays.stream(identityResponseDto.getRoles().split(",")).toList();
+        if(auth.contains("ROLE_CUSTOMER") && auth.size()==1){
+            throw new UserNotFound("Please register your shop with www.localGrocery.com... signup as Owner.. ");
+        }
+        RequestProductDto requestProductDto1 = mapToProductDto(requestProductDto,shop,identityResponseDto);
+
+        shop.setProductsRegistered(shop.getProductsRegistered()+1);
+        Shop shop1 = shopRepository.save(shop);
+
+        return productFeignClient.saveProduct(requestProductDto1);
+
+    }
+    private RequestProductDto mapToProductDto(RequestProductShopDto requestProductDto,Shop shop,IdentityResponseDto identityResponseDto){
+        RequestProductDto requestProductDto1 = new RequestProductDto();
+        requestProductDto1.setProductName(requestProductDto.getProductName());
+        requestProductDto1.setPrice(requestProductDto.getPrice());
+        requestProductDto1.setQuantity(requestProductDto.getQuantity());
+        requestProductDto1.setEmailId(identityResponseDto.getEmailId());
+        requestProductDto1.setCategory(requestProductDto.getCategory());
+        requestProductDto1.setShopName(shop.getShopName());
+        return requestProductDto1;
+    }
+
+
+    @Override
+    public List<ResponseProductDto> getAllProducts(String userName) throws UserNotFound {
+        IdentityResponseDto identityResponseDto = identityFeignClient.getUserCredentials(userName);
+
+        List<String> auth = Arrays.stream(identityResponseDto.getRoles().split(",")).toList();
+        if(auth.contains("ROLE_CUSTOMER") && auth.size()==1){
+            throw new UserNotFound("Please register your shop with www.localGrocery.com... signup as Owner.."+identityResponseDto.getEmailId());
+        }
+
+        return productFeignClient.getByEmail(identityResponseDto.getEmailId());
+    }
+
+
+    @Override
+    public ResponseProductDto updateProduct(String userName, RequestOwnerDto requestOwnerDto) throws UserNotAutherizedException {
+        IdentityResponseDto identityResponseDto = identityFeignClient.getUserCredentials(userName);
+        List<String> owner = Arrays.stream(identityResponseDto.getRoles().split(",")).toList();
+
+        if(owner.contains("ROLE_CUSTOMER") && owner.size() == 1) {
+            throw new UserNotAutherizedException("You are UnAuthorized to Update product in a shop...  "+identityResponseDto.getEmailId());
+        }
+
+        Shop shop = shopRepository.findByEmailId(identityResponseDto.getEmailId());
+        requestOwnerDto.setEmailId(identityResponseDto.getEmailId());
+        requestOwnerDto.setShopName(shop.getShopName());
+
+        return productFeignClient.updateProduct(requestOwnerDto);
+    }
+
+
+    @Override
+    public List<ResponseOrderDto> getAllOrdersByOwnerEmailId(String userName) throws UserNotAutherizedException, OrdersNotPlacedException, ShopIsNotFoundException {
+        IdentityResponseDto identityResponseDto = identityFeignClient.getUserCredentials(userName);
+        List<String> owner = Arrays.stream(identityResponseDto.getRoles().split(",")).toList();
+
+        if(owner.contains("ROLE_CUSTOMER") && owner.size() == 1) {
+            throw new UserNotAutherizedException("You are UnAuthorized to get Orders from a shop...  "+identityResponseDto.getEmailId());
+        }
+
+        Shop shop = shopRepository.findByEmailId(identityResponseDto.getEmailId());
+
+        if(shop == null) {
+
+            throw new ShopIsNotFoundException("Please add your shop to www.localGrocery.com.");
+        }
+
+        return orderFeignClient.getAllOrdersByShopName(shop.getShopName());
+    }
+}
