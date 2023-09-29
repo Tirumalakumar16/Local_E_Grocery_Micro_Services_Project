@@ -4,3 +4,4 @@
 # Local E Grocery service is used to order all grocery items by customers from respected local shops.
 # All Shops are registered with our Website in www.localGrocery.com .
 # Completely secure Management of Carts,Products,Addresses,Payments,Orders all services.
+# fully updated with Exceptions for each API.
