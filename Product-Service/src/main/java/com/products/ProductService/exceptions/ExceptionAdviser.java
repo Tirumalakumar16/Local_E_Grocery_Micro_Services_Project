@@ -1,7 +1,5 @@
-package com.customer.CustomerService.exceptions;
+package com.products.ProductService.exceptions;
 
-import com.cartservice.CartService.exceptions.CartDetailsNotFound;
-import com.ktkapp.addressservice.exceptions.AddressNotFoundWithEmail;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -10,34 +8,27 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class ExceptionAdviser {
 
-    @ExceptionHandler(CartServiceUpdationException.class)
+
+
+    @ExceptionHandler(ProductsNotAvailableWithProductAndSellerEmail.class)
     public ResponseEntity<ErrorMessage> exceptionHandling1(Exception exception) {
         ErrorMessage errorMessage = new ErrorMessage();
         errorMessage.setErrorMessage(exception.getMessage());
-        return new ResponseEntity<>(errorMessage, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(CustomerDetailsNotAvailable.class)
+    @ExceptionHandler(ProductsNotAvailableWithShopName.class)
     public ResponseEntity<ErrorMessage> exceptionHandling2(Exception exception) {
         ErrorMessage errorMessage = new ErrorMessage();
         errorMessage.setErrorMessage(exception.getMessage());
         return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
     }
 
-//    @ExceptionHandler(AddressNotFoundWithEmail.class)
-//    public ResponseEntity<ErrorMessage> exceptionHandling3(Exception exception) {
-//        ErrorMessage errorMessage = new ErrorMessage();
-//        errorMessage.setErrorMessage(exception.getMessage());
-//        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
-//    }
-
-    @ExceptionHandler(CartDetailsNotFoundException.class)
-    public ResponseEntity<ErrorMessage> exceptionHandling4(Exception exception) {
+    @ExceptionHandler(ProductsNotAvailableWithProductName.class)
+    public ResponseEntity<ErrorMessage> exceptionHandling3(Exception exception) {
         ErrorMessage errorMessage = new ErrorMessage();
         errorMessage.setErrorMessage(exception.getMessage());
         return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
     }
-
-
 
 }

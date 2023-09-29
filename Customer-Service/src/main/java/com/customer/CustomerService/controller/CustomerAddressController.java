@@ -23,8 +23,7 @@ public class CustomerAddressController {
     @PostMapping("customer/address")// working
     public ResponseAddressDto saveAddresForUser(@RequestBody RequestAddressDto requestAddressDto, @RequestHeader("loggedInUser") String userName)  {
 
-        ResponseAddressDto responseAddressDto = customerService.saveAddress(requestAddressDto,userName);
-        return responseAddressDto;
+        return customerService.saveAddress(requestAddressDto,userName);
     }
 
     @GetMapping("/customer/addresses")
@@ -35,20 +34,18 @@ public class CustomerAddressController {
 
     }
     @DeleteMapping ("/customer/address")
-    public String deleteAddressWithZip(@RequestBody DeleteAddressRequest deleteAddressRequest, @RequestHeader("LoggedInUser") String userName) {
+    public String deleteAddressWithZip(@RequestBody DeleteAddressRequest deleteAddressRequest, @RequestHeader("LoggedInUser") String userName) throws AddressNotFoundWithEmail {
 
             return customerService.deleteAddressWithZip(deleteAddressRequest,userName);
     }
 
     @PutMapping("/customer/address")
-    public ResponseAddressDto updateAddress(@RequestBody UpdateAddressRequest updateAddressRequest, @RequestHeader("LoggedInUser") String userName) {
+    public ResponseAddressDto updateAddress(@RequestBody UpdateAddressRequest updateAddressRequest, @RequestHeader("LoggedInUser") String userName) throws AddressNotFoundWithEmail {
 
-        ResponseAddressDto responseAddressDto = customerService.updateAddress(updateAddressRequest,userName);
-
-        return responseAddressDto;
+        return customerService.updateAddress(updateAddressRequest,userName);
     }
     @GetMapping("/customer/email_zip_houseNumber")
-    public ResponseAddressDto getAddressByZipAndMail(@RequestBody RequestByZipAndEmailDto requestByZipAndEmailDto, @RequestHeader("LoggedInUser") String userName) {
+    public ResponseAddressDto getAddressByZipAndMail(@RequestBody RequestByZipAndEmailDto requestByZipAndEmailDto, @RequestHeader("LoggedInUser") String userName) throws AddressNotFoundWithEmail {
 
         return customerService.getByZipAndEmail(requestByZipAndEmailDto,userName);
     }

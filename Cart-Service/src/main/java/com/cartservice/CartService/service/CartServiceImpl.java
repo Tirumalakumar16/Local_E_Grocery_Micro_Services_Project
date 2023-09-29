@@ -3,6 +3,7 @@ package com.cartservice.CartService.service;
 import com.cartservice.CartService.dtos.RequestCartDto;
 import com.cartservice.CartService.dtos.ResponseCartDto;
 import com.cartservice.CartService.dtos.UpdateCartDto;
+import com.cartservice.CartService.exceptions.CartDetailsNotFound;
 import com.cartservice.CartService.models.Cart;
 import com.cartservice.CartService.repository.CartRepository;
 
@@ -47,17 +48,24 @@ public class CartServiceImpl implements CartService{
     }
 
     @Override
-    public List<ResponseCartDto> getAllCart(String email) {
+    public List<ResponseCartDto> getAllCart(String email) throws CartDetailsNotFound {
 
         List<Cart> carts = cartRepository.findByEmailId(email);
+
+        if (carts.isEmpty()) {
+            throw new CartDetailsNotFound("cart Details Not found with email "+ email);
+        }
 
         return Arrays.asList(modelMapper.map(carts,ResponseCartDto[].class));
     }
 
     @Override
-    public ResponseCartDto updateCart(UpdateCartDto updateCartDto) {
+    public ResponseCartDto updateCart(UpdateCartDto updateCartDto) throws CartDetailsNotFound {
         Cart cart = cartRepository.findByEmailIdAndProductName(updateCartDto.getEmailId(),updateCartDto.getProductName());
 
+        if (cart == null) {
+            throw new CartDetailsNotFound("Please add product to cart first then edit....");
+        }
         cart.setQuantity(updateCartDto.getQuantity());
         Cart cart1 = cartRepository.save(cart);
         return modelMapper.map(cart1, ResponseCartDto.class);

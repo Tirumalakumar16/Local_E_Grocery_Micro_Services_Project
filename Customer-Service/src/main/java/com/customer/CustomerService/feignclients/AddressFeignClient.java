@@ -4,6 +4,7 @@ import com.ktkapp.addressservice.dtos.DeleteAddressRequest;
 import com.ktkapp.addressservice.dtos.RequestAddressDto;
 import com.ktkapp.addressservice.dtos.ResponseAddressDto;
 import com.ktkapp.addressservice.dtos.UpdateAddressRequest;
+import com.ktkapp.addressservice.exceptions.AddressNotFoundWithEmail;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,19 +17,19 @@ public interface AddressFeignClient {
     public ResponseAddressDto saveAddress(@RequestBody RequestAddressDto requestAddressDto);
 
     @GetMapping("/addresses/{email}")
-    public List<ResponseAddressDto> getAddresses(@PathVariable("email") String emailId);
+    public List<ResponseAddressDto> getAddresses(@PathVariable("email") String emailId) throws AddressNotFoundWithEmail;
 
     @DeleteMapping("/address")
-    public String deleteAddress(@RequestBody DeleteAddressRequest deleteAddress);
+    public String deleteAddress(@RequestBody DeleteAddressRequest deleteAddress) throws AddressNotFoundWithEmail;
 
     @PutMapping("/address")
-    public ResponseAddressDto updateAddress(@RequestBody UpdateAddressRequest updateAddressRequest);
+    public ResponseAddressDto updateAddress(@RequestBody UpdateAddressRequest updateAddressRequest) throws AddressNotFoundWithEmail;
 
 
     @GetMapping("/address/{houseNumber}")
-    public ResponseAddressDto getByHouseNumber(@PathVariable("houseNumber") String houseNumber);
+    public ResponseAddressDto getByHouseNumber(@PathVariable("houseNumber") String houseNumber) throws AddressNotFoundWithEmail;
 
 
     @GetMapping("/address/{email}/{houseNumber}/{zip}")
-    public ResponseAddressDto getByZipAddress(@PathVariable("email") String email,@PathVariable("houseNumber") String houseNumber,@PathVariable("zip") String zip);
+    public ResponseAddressDto getByZipAddress(@PathVariable("email") String email,@PathVariable("houseNumber") String houseNumber,@PathVariable("zip") String zip) throws AddressNotFoundWithEmail;
 }

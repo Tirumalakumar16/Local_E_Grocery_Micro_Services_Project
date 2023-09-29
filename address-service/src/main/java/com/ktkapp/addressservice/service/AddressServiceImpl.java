@@ -5,6 +5,7 @@ import com.ktkapp.addressservice.exceptions.AddressNotFoundWithEmail;
 import com.ktkapp.addressservice.models.Address;
 import com.ktkapp.addressservice.repository.AddressRepo;
 import com.ktkapp.addressservice.service.kafka.KafkaPublisher;
+import org.apache.hc.core5.net.Host;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,35 +45,44 @@ public class AddressServiceImpl implements AddressService{
         address.setCreatedAt(new Date());
 
         address =addressRepo.save(address);
-        ResponseAddressDto responseAddressDto = modelMapper.map(address, ResponseAddressDto.class);
-   //   kafkaPublisher.sendMessage("Address saved successfully for email : "+ requestAddressDto.getEmailRequest().getEmailId());
-        return responseAddressDto;
+        //   kafkaPublisher.sendMessage("Address saved successfully for email : "+ requestAddressDto.getEmailRequest().getEmailId());
+        return modelMapper.map(address, ResponseAddressDto.class);
     }
 
     @Override
     public List<ResponseAddressDto> getAddress(String email) throws AddressNotFoundWithEmail {
 
         List<Address> address = addressRepo.findAllByEmailId(email);
-        if(address == null) {
-            throw new AddressNotFoundWithEmail("Address is not found with provided email "+email);
+
+        if(address.isEmpty()) {
+            throw new AddressNotFoundWithEmail("Addresses is not found with provided email "+email);
         }
 
-        List<ResponseAddressDto> responseAddressDtos = Arrays.asList(modelMapper.map(address, ResponseAddressDto[].class));
-     //   kafkaPublisher.sendMessage("Retrieved the Addresses from Address service with email Id : "+email);
-        return responseAddressDtos;
+        //   kafkaPublisher.sendMessage("Retrieved the Addresses from Address service with email Id : "+email);
+        return Arrays.asList(modelMapper.map(address, ResponseAddressDto[].class));
     }
 
     @Override
-    public String deleteAddress(DeleteAddressRequest deleteAddress) {
+    public String deleteAddress(DeleteAddressRequest deleteAddress) throws AddressNotFoundWithEmail {
+        Address address = addressRepo.findByZipAndEmailId(deleteAddress.getZip(),deleteAddress.getEmailAddressRequest().getEmailId());
+
+        if(address ==  null) {
+            throw new AddressNotFoundWithEmail("House Number is not existed for email "+deleteAddress.getEmailAddressRequest().getEmailId());
+        }
+
          addressRepo.deleteByZipAndEmailId(deleteAddress.getZip(),deleteAddress.getEmailAddressRequest().getEmailId(),deleteAddress.getHouseNumber());
       //   kafkaPublisher.sendMessage("Address is deleted from your account...");
          return "Address Deleted successfully from your Account.... ";
     }
 
     @Override
-    public ResponseAddressDto updateAddress(UpdateAddressRequest updateAddressRequest) {
+    public ResponseAddressDto updateAddress(UpdateAddressRequest updateAddressRequest) throws AddressNotFoundWithEmail {
 
         Address address = addressRepo.findByZipAndEmailId(updateAddressRequest.getZip(),updateAddressRequest.getEmailRequest().getEmailId());
+
+        if(address ==  null) {
+            throw new AddressNotFoundWithEmail("Address is not existed for email "+updateAddressRequest.getEmailRequest().getEmailId());
+        }
 
         if(updateAddressRequest.getState() != null && updateAddressRequest.getState().length()>=3){
 
@@ -109,18 +119,26 @@ public class AddressServiceImpl implements AddressService{
 
 
     @Override
-    public ResponseAddressDto getByZipAddress(String email, String houseNumber,String zip) {
+    public ResponseAddressDto getByZipAddress(String email, String houseNumber,String zip) throws AddressNotFoundWithEmail {
 
         Address address= addressRepo.findByEmailIdAndHouseNumberAndZip(email,houseNumber,zip);
+
+        if(address ==  null) {
+            throw new AddressNotFoundWithEmail("House Number is not existed for email "+email);
+        }
      //   kafkaPublisher.sendMessage("Address is fetched :: " +email);
     return modelMapper.map(address, ResponseAddressDto.class);
 
     }
 
     @Override
-    public ResponseAddressDto getByHouseNumber(String houseNumber) {
+    public ResponseAddressDto getByHouseNumber(String houseNumber) throws AddressNotFoundWithEmail {
 
         Address address = addressRepo.findByHouseNumber(houseNumber);
+
+        if(address ==  null) {
+            throw new AddressNotFoundWithEmail("House Number is not existed for House Number "+ houseNumber);
+        }
 
         return modelMapper.map(address, ResponseAddressDto.class);
     }

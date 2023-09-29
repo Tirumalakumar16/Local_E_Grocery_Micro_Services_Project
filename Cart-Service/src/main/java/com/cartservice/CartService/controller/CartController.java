@@ -3,6 +3,7 @@ package com.cartservice.CartService.controller;
 import com.cartservice.CartService.dtos.RequestCartDto;
 import com.cartservice.CartService.dtos.ResponseCartDto;
 import com.cartservice.CartService.dtos.UpdateCartDto;
+import com.cartservice.CartService.exceptions.CartDetailsNotFound;
 import com.cartservice.CartService.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,12 +28,12 @@ public class CartController {
         return new ResponseEntity<>(responseCartDto, HttpStatus.CREATED);
     }
     @GetMapping("/carts/{email}")
-    public List<ResponseCartDto> getAllCart(@PathVariable("email") String email) {
+    public List<ResponseCartDto> getAllCart(@PathVariable("email") String email) throws CartDetailsNotFound {
 
         return cartService.getAllCart(email);
     }
     @PutMapping("/cart")
-    public ResponseEntity<ResponseCartDto> updatecart(@RequestBody UpdateCartDto updateCartDto) {
+    public ResponseEntity<ResponseCartDto> updatecart(@RequestBody UpdateCartDto updateCartDto) throws CartDetailsNotFound {
 
         ResponseCartDto responseCartDto = cartService.updateCart(updateCartDto);
 

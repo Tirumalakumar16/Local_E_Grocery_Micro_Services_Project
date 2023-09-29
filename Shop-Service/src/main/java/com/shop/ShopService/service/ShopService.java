@@ -5,6 +5,7 @@ import com.orders.OrdersService.exceptions.OrdersNotPlacedException;
 import com.products.ProductService.dtos.RequestOwnerDto;
 import com.products.ProductService.dtos.RequestProductDto;
 import com.products.ProductService.dtos.ResponseProductDto;
+import com.products.ProductService.exceptions.ProductsNotAvailableWithProductAndSellerEmail;
 import com.shop.ShopService.dtos.RequestShopDtos;
 import com.shop.ShopService.dtos.ResponseShopCustDto;
 import com.shop.ShopService.dtos.ResponseShopDto;
@@ -24,9 +25,9 @@ public interface ShopService {
 
     ResponseProductDto saveProduct(RequestProductShopDto requestProductDto, String userName) throws UserNotFound;
     
-    List<ResponseProductDto> getAllProducts(String userName) throws UserNotFound;
+    List<ResponseProductDto> getAllProducts(String userName) throws UserNotFound, ProductsNotAvailableWithProductAndSellerEmail;
 
-    ResponseProductDto updateProduct(String userName, RequestOwnerDto requestOwnerDto) throws UserNotFound, UserNotAutherizedException;
+    ResponseProductDto updateProduct(String userName, RequestOwnerDto requestOwnerDto) throws UserNotFound, UserNotAutherizedException, ProductsNotAvailableWithProductAndSellerEmail;
 
     List<ResponseOrderDto> getAllOrdersByOwnerEmailId(String userName) throws UserNotAutherizedException, OrdersNotPlacedException, ShopIsNotFoundException;
 }

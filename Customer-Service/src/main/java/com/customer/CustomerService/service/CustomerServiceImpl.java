@@ -3,6 +3,7 @@ package com.customer.CustomerService.service;
 import com.cartservice.CartService.dtos.RequestCartDto;
 import com.cartservice.CartService.dtos.ResponseCartDto;
 import com.cartservice.CartService.dtos.UpdateCartDto;
+import com.cartservice.CartService.exceptions.CartDetailsNotFound;
 import com.customer.CustomerService.dtos.RequestAddressCustDto;
 import com.customer.CustomerService.dtos.RequestCustomerDto;
 import com.customer.CustomerService.dtos.ResponseCustomerDto;
@@ -25,6 +26,8 @@ import com.payment.PaymentService.dtos.ResponsePaymentDto;
 import com.payment.PaymentService.exceptions.PaymentsNotFound;
 import com.products.ProductService.dtos.ResponseProductCustDto;
 import com.products.ProductService.dtos.ResponseProductDto;
+import com.products.ProductService.exceptions.ProductsNotAvailableWithProductName;
+import com.products.ProductService.exceptions.ProductsNotAvailableWithShopName;
 import org.bouncycastle.asn1.esf.OtherRevRefs;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,7 +103,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         List<String> auth = Arrays.stream(identityResponseDto.getRoles().split(",")).toList();
         if(!auth.contains("ROLE_ADMIN")) {
-            throw new CustomerDetailsNotAvailable("You are not autherized to get All Customers details........");
+            throw new CustomerDetailsNotAvailable("You are not authorized to get All Customers details........");
         }
 
         List<Customer> customers = customerRepository.findAll();
@@ -119,7 +122,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 
     @Override
-    public ResponseAddressDto saveAddress(RequestAddressDto requestAddressDto, String username) {
+    public ResponseAddressDto saveAddress(RequestAddressDto requestAddressDto, String username)  {
 
         IdentityResponseDto identityResponseDto =identityFeignClient.getUserCredentials(username);
 
@@ -144,7 +147,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public String deleteAddressWithZip(DeleteAddressRequest deleteAddressRequest, String userName) {
+    public String deleteAddressWithZip(DeleteAddressRequest deleteAddressRequest, String userName) throws AddressNotFoundWithEmail {
 
         IdentityResponseDto identityResponseDto =identityFeignClient.getUserCredentials(userName);
 
@@ -157,7 +160,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 
     @Override
-    public ResponseAddressDto updateAddress(UpdateAddressRequest updateAddressRequest, String userName) {
+    public ResponseAddressDto updateAddress(UpdateAddressRequest updateAddressRequest, String userName) throws AddressNotFoundWithEmail {
 
         IdentityResponseDto identityResponseDto =identityFeignClient.getUserCredentials(userName);
 
@@ -170,7 +173,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public ResponseAddressDto getByZipAndEmail(RequestByZipAndEmailDto requestByZipAndEmailDto,String userName) {
+    public ResponseAddressDto getByZipAndEmail(RequestByZipAndEmailDto requestByZipAndEmailDto,String userName) throws AddressNotFoundWithEmail {
 
         IdentityResponseDto identityResponseDto = identityFeignClient.getUserCredentials(userName);
 
@@ -179,14 +182,14 @@ public class CustomerServiceImpl implements CustomerService {
 
 
     @Override
-    public List<ResponseProductCustDto> getByShopName(String shopName) {
+    public List<ResponseProductCustDto> getByShopName(String shopName) throws ProductsNotAvailableWithShopName {
 
         return productFeignClient.getProductsByShopName(shopName);
     }
 
 
     @Override
-    public ResponseEntity<ResponseCartDto> saveCart(RequestCustCartDto requestCustCartDto, String userName) throws CartServiceUpdationException {
+    public ResponseEntity<ResponseCartDto> saveCart(RequestCustCartDto requestCustCartDto, String userName) throws CartServiceUpdationException, ProductsNotAvailableWithProductName {
 
         IdentityResponseDto identityResponseDto = identityFeignClient.getUserCredentials(userName);
 
@@ -210,7 +213,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 
     @Override
-    public ResponseEntity<ResponseCartDto> updatecart(UpdateCartDto updateCartDto,String userName) throws CartServiceUpdationException {
+    public ResponseEntity<ResponseCartDto> updatecart(UpdateCartDto updateCartDto,String userName) throws CartServiceUpdationException, CartDetailsNotFound {
             IdentityResponseDto identityResponseDto = identityFeignClient.getUserCredentials(userName);
             List<String> authorization = Arrays.stream(identityResponseDto.getRoles().split(",")).toList();
 
@@ -225,9 +228,13 @@ public class CustomerServiceImpl implements CustomerService {
 
 
     @Override
-    public List<ResponseCartDto> getAllProductsFromCart(String userName) throws CartDetailsNotFoundException {
+    public List<ResponseCartDto> getAllProductsFromCart(String userName) throws CartDetailsNotFoundException, CartDetailsNotFound, CartServiceUpdationException {
         IdentityResponseDto identityResponseDto = identityFeignClient.getUserCredentials(userName);
+        List<String> authorization = Arrays.stream(identityResponseDto.getRoles().split(",")).toList();
 
+        if(!authorization.contains("ROLE_CUSTOMER")){
+            throw  new CartServiceUpdationException("you are not authorize to use Cart Service in www.localGrocery.com. Please sign up as Customer to use Cart...");
+        }
 
         return cartFeignClient.getAllCart(identityResponseDto.getEmailId());
     }
@@ -239,7 +246,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 
     @Override
-    public String order(String userName, RequestAddressCustDto requestAddressCustDto) throws AddressNotFoundWithEmail, CartServiceUpdationException {
+    public String order(String userName, RequestAddressCustDto requestAddressCustDto) throws AddressNotFoundWithEmail, CartServiceUpdationException, CartDetailsNotFound {
 
         IdentityResponseDto identityResponseDto = identityFeignClient.getUserCredentials(userName);
 

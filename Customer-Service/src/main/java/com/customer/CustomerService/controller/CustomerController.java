@@ -26,24 +26,20 @@ public class CustomerController {
     }
 
     @GetMapping("/customer")
-    public ResponseCustomerDto getCustomer(@RequestHeader("LoggedInUser") String userName) {
+    public ResponseCustomerDto getCustomer(@RequestHeader("LoggedInUser") String userName) throws CustomerDetailsNotAvailable {
 
-        try {
+
             return customerService.getCustomer(userName);
-        } catch (CustomerDetailsNotAvailable e) {
-            throw new RuntimeException(e);
-        }
+
     }
 
     @GetMapping("/customers")
-    public List<ResponseCustomerDto> getAllCustomers(@RequestHeader("LoggedInUser") String userName) {
+    public List<ResponseCustomerDto> getAllCustomers(@RequestHeader("LoggedInUser") String userName) throws CustomerDetailsNotAvailable {
 
 
-        try {
+
             return customerService.getAll(userName);
-        } catch (CustomerDetailsNotAvailable e) {
-            throw new RuntimeException(e);
-        }
+
     }
 
 

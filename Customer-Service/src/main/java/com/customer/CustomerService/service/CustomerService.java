@@ -2,6 +2,7 @@ package com.customer.CustomerService.service;
 
 import com.cartservice.CartService.dtos.ResponseCartDto;
 import com.cartservice.CartService.dtos.UpdateCartDto;
+import com.cartservice.CartService.exceptions.CartDetailsNotFound;
 import com.customer.CustomerService.dtos.RequestAddressCustDto;
 import com.customer.CustomerService.dtos.RequestCustomerDto;
 import com.customer.CustomerService.dtos.ResponseCustomerDto;
@@ -17,6 +18,8 @@ import com.orders.OrdersService.exceptions.OrdersNotPlacedException;
 import com.payment.PaymentService.dtos.ResponsePaymentDto;
 import com.payment.PaymentService.exceptions.PaymentsNotFound;
 import com.products.ProductService.dtos.ResponseProductCustDto;
+import com.products.ProductService.exceptions.ProductsNotAvailableWithProductName;
+import com.products.ProductService.exceptions.ProductsNotAvailableWithShopName;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -34,29 +37,29 @@ public interface CustomerService {
 
 
 
-    ResponseAddressDto saveAddress(RequestAddressDto requestAddressDto, String userName);
+    ResponseAddressDto saveAddress(RequestAddressDto requestAddressDto, String userName) ;
 
     List<ResponseAddressDto> getAddressesFromAddressService(String username) throws AddressNotFoundWithEmail;
 
-    String deleteAddressWithZip(DeleteAddressRequest deleteAddressRequest, String userName);
+    String deleteAddressWithZip(DeleteAddressRequest deleteAddressRequest, String userName) throws AddressNotFoundWithEmail;
 
-    ResponseAddressDto updateAddress(UpdateAddressRequest updateAddressRequest, String userName);
-
-
-
-    ResponseAddressDto getByZipAndEmail(RequestByZipAndEmailDto requestByZipAndEmailDto, String userName);
+    ResponseAddressDto updateAddress(UpdateAddressRequest updateAddressRequest, String userName) throws AddressNotFoundWithEmail;
 
 
-    List<ResponseProductCustDto> getByShopName(String shopName);
+
+    ResponseAddressDto getByZipAndEmail(RequestByZipAndEmailDto requestByZipAndEmailDto, String userName) throws AddressNotFoundWithEmail;
 
 
-    ResponseEntity<ResponseCartDto> saveCart(RequestCustCartDto requestCustCartDto, String userName) throws CartServiceUpdationException;
+    List<ResponseProductCustDto> getByShopName(String shopName) throws ProductsNotAvailableWithShopName;
 
-    ResponseEntity<ResponseCartDto> updatecart(UpdateCartDto updateCartDto,String userName) throws CartServiceUpdationException;
 
-    List<ResponseCartDto> getAllProductsFromCart(String userName) throws CartDetailsNotFoundException;
+    ResponseEntity<ResponseCartDto> saveCart(RequestCustCartDto requestCustCartDto, String userName) throws CartServiceUpdationException, ProductsNotAvailableWithProductName;
 
-    String order(String userName, RequestAddressCustDto addressCustDto) throws AddressNotFoundWithEmail, CartServiceUpdationException;
+    ResponseEntity<ResponseCartDto> updatecart(UpdateCartDto updateCartDto,String userName) throws CartServiceUpdationException, CartDetailsNotFound;
+
+    List<ResponseCartDto> getAllProductsFromCart(String userName) throws CartDetailsNotFoundException, CartDetailsNotFound, CartServiceUpdationException;
+
+    String order(String userName, RequestAddressCustDto addressCustDto) throws AddressNotFoundWithEmail, CartServiceUpdationException, CartDetailsNotFound;
 
     List<ResponseOrderDto> getAllOrdersByCustomerEmail(String userName) throws CartServiceUpdationException, OrdersNotPlacedException;
 

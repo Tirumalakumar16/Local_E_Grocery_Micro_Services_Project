@@ -3,6 +3,7 @@ package com.shop.ShopService.controller;
 import com.products.ProductService.dtos.RequestOwnerDto;
 import com.products.ProductService.dtos.RequestProductDto;
 import com.products.ProductService.dtos.ResponseProductDto;
+import com.products.ProductService.exceptions.ProductsNotAvailableWithProductAndSellerEmail;
 import com.shop.ShopService.dtos.product.RequestProductShopDto;
 import com.shop.ShopService.exceptions.UserNotAutherizedException;
 import com.shop.ShopService.exceptions.UserNotFound;
@@ -32,13 +33,13 @@ public class OwnerController {
     }
 
     @GetMapping("/products")
-    public List<ResponseProductDto> getAllProducts(@RequestHeader("LoggedInUser") String userName) throws UserNotFound {
+    public List<ResponseProductDto> getAllProducts(@RequestHeader("LoggedInUser") String userName) throws UserNotFound, ProductsNotAvailableWithProductAndSellerEmail {
 
             return shopService.getAllProducts(userName);
 
     }
     @PutMapping("/product")
-    public ResponseProductDto updateProduct(@RequestHeader("LoggedInUser") String userName, @RequestBody RequestOwnerDto requestOwnerDto) throws UserNotFound, UserNotAutherizedException {
+    public ResponseProductDto updateProduct(@RequestHeader("LoggedInUser") String userName, @RequestBody RequestOwnerDto requestOwnerDto) throws UserNotFound, UserNotAutherizedException, ProductsNotAvailableWithProductAndSellerEmail {
 
         return shopService.updateProduct(userName,requestOwnerDto);
     }

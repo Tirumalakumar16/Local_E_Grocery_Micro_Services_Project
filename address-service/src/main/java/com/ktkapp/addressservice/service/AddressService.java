@@ -10,11 +10,11 @@ public interface AddressService {
 
     List<ResponseAddressDto> getAddress(String email) throws AddressNotFoundWithEmail;
 
-    String deleteAddress(DeleteAddressRequest deleteAddress);
+    String deleteAddress(DeleteAddressRequest deleteAddress) throws AddressNotFoundWithEmail;
 
-    ResponseAddressDto updateAddress(UpdateAddressRequest updateAddressRequest);
+    ResponseAddressDto updateAddress(UpdateAddressRequest updateAddressRequest) throws AddressNotFoundWithEmail;
 
-    ResponseAddressDto getByZipAddress(String email, String houseNumber,String zip);
+    ResponseAddressDto getByZipAddress(String email, String houseNumber,String zip) throws AddressNotFoundWithEmail;
 
-    ResponseAddressDto getByHouseNumber(String houseNumber);
+    ResponseAddressDto getByHouseNumber(String houseNumber) throws AddressNotFoundWithEmail;
 }

@@ -5,6 +5,9 @@ import com.products.ProductService.dtos.RequestOwnerDto;
 import com.products.ProductService.dtos.RequestProductDto;
 import com.products.ProductService.dtos.ResponseProductCustDto;
 import com.products.ProductService.dtos.ResponseProductDto;
+import com.products.ProductService.exceptions.ProductsNotAvailableWithProductAndSellerEmail;
+import com.products.ProductService.exceptions.ProductsNotAvailableWithProductName;
+import com.products.ProductService.exceptions.ProductsNotAvailableWithShopName;
 import com.products.ProductService.models.Product;
 import com.products.ProductService.models.ProductStatus;
 import com.products.ProductService.repository.ProductRepository;
@@ -48,31 +51,47 @@ public class ProductServiceImpl implements ProductService{
 
 
     @Override
-    public List<ResponseProductCustDto> getProductsByShopName(String shopName) {
+    public List<ResponseProductCustDto> getProductsByShopName(String shopName) throws ProductsNotAvailableWithShopName {
         List<Product> products = productRepository.findByShopName(shopName);
+
+        if(products.isEmpty()) {
+            throw new ProductsNotAvailableWithShopName("Provided shopName doesn't exists with ");
+        }
 
      return Arrays.asList(modelMapper.map(products, ResponseProductCustDto[].class));
     }
 
 
     @Override
-    public ResponseProductCustDto getProduct(String productName) {
+    public ResponseProductCustDto getProduct(String productName) throws ProductsNotAvailableWithProductName {
         Product product = productRepository.findByProductName(productName);
+
+        if(product == null) {
+            throw new ProductsNotAvailableWithProductName("Provided product doesn't exists with ");
+        }
 
         return modelMapper.map(product, ResponseProductCustDto.class);
     }
 
 
     @Override
-    public ResponseProductDto getProductBySellerName(String productName, String emailId) {
+    public ResponseProductDto getProductBySellerName(String productName, String emailId) throws ProductsNotAvailableWithShopName {
         Product product = productRepository.findByProductAndEmailId(productName,emailId);
+
+        if(product == null) {
+            throw new ProductsNotAvailableWithShopName("Provided product doesn't exists with ");
+        }
 
         return modelMapper.map(product, ResponseProductDto.class);
     }
 
     @Override
-    public ResponseProductDto updateProduct(RequestOwnerDto requestOwnerDto) {
+    public ResponseProductDto updateProduct(RequestOwnerDto requestOwnerDto) throws ProductsNotAvailableWithProductAndSellerEmail {
          Product product = productRepository.findByProductAndEmailId(requestOwnerDto.getProductName(), requestOwnerDto.getEmailId());
+
+        if(product == null) {
+            throw new ProductsNotAvailableWithProductAndSellerEmail("Provided product doesn't exists with ");
+        }
 
          if(requestOwnerDto.getProductName() != null) {
              product.setProductName(requestOwnerDto.getProductName());
@@ -93,8 +112,12 @@ public class ProductServiceImpl implements ProductService{
 
 
     @Override
-    public List<ResponseProductDto> getByEmail(String emailId) {
+    public List<ResponseProductDto> getByEmail(String emailId) throws ProductsNotAvailableWithProductAndSellerEmail {
         List<Product> products = productRepository.findByEmailId(emailId);
+
+        if(products.isEmpty()) {
+            throw new ProductsNotAvailableWithProductAndSellerEmail("Provided product doesn't exists with ");
+        }
 
         return Arrays.asList(modelMapper.map(products, ResponseProductDto[].class));
     }
