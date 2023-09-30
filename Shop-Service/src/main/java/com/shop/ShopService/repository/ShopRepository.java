@@ -14,4 +14,5 @@ public interface ShopRepository extends JpaRepository<Shop,Long> {
     List<Shop> findByCity(String city);
     @Query(value = "select * from grocery_shop.shop s where s.email_id=?1",nativeQuery = true)
     Shop findByEmailId(String emailId);
+
 }

@@ -2,6 +2,8 @@ package com.orders.OrdersService.service;
 
 import com.orders.OrdersService.dtos.RequestOrderDto;
 import com.orders.OrdersService.dtos.ResponseOrderDto;
+import com.orders.OrdersService.dtos.ResponseOrderShopDto;
+import com.orders.OrdersService.dtos.ResponseOrdersShopTotalDto;
 import com.orders.OrdersService.exceptions.OrdersNotPlacedException;
 import com.orders.OrdersService.feignclients.PaymentFeignClient;
 import com.orders.OrdersService.models.OrderDetails;
@@ -9,7 +11,6 @@ import com.orders.OrdersService.repository.OrderRepository;
 import com.payment.PaymentService.dtos.RequestPaymentDto;
 import com.payment.PaymentService.dtos.ResponsePaymentDto;
 import com.payment.PaymentService.models.PaymentMode;
-import com.payment.PaymentService.service.PaymentService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -119,5 +120,33 @@ public class OrderServiceImpl implements OrderService{
             throw new OrdersNotPlacedException("Sorry ...Please Order to get All orders.....");
         }
         return Arrays.asList(modelMapper.map(orderDetails, ResponseOrderDto[].class));
+    }
+
+
+    @Override
+    public List<ResponseOrderShopDto> getAllCustomersPerShopOrders(String shopName) throws OrdersNotPlacedException {
+
+        List<ResponseOrderShopDto> responseOrderShopDtos =orderRepository.findTotalByCustomerWise(shopName);
+
+        if (responseOrderShopDtos.isEmpty()) {
+            throw new OrdersNotPlacedException("Orders Not found on your shop Name..");
+        }
+
+        return responseOrderShopDtos;
+    }
+
+
+    @Override
+    public List<ResponseOrdersShopTotalDto> getAllCustomersTotalAmountPerShopOrders(String shopName) throws OrdersNotPlacedException {
+
+        List<ResponseOrdersShopTotalDto> responseOrdersShopTotalDtos = orderRepository.findTotalAmountOfCustomersPerShop(shopName);
+
+        if (responseOrdersShopTotalDtos.isEmpty()) {
+            throw new OrdersNotPlacedException("Orders Not found on your shop Name..");
+        }
+
+        return responseOrdersShopTotalDtos;
+
+
     }
 }

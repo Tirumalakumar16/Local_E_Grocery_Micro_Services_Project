@@ -3,6 +3,7 @@ package com.shop.ShopService.service;
 import com.identityservice.dtos.IdentityResponseDto;
 import com.ktkapp.addressservice.dtos.ResponseAddressDto;
 import com.orders.OrdersService.dtos.ResponseOrderDto;
+import com.orders.OrdersService.dtos.ResponseOrdersShopTotalDto;
 import com.orders.OrdersService.exceptions.OrdersNotPlacedException;
 import com.products.ProductService.dtos.RequestOwnerDto;
 import com.products.ProductService.dtos.RequestProductDto;
@@ -11,6 +12,7 @@ import com.products.ProductService.exceptions.ProductsNotAvailableWithProductAnd
 import com.shop.ShopService.dtos.RequestShopDtos;
 import com.shop.ShopService.dtos.ResponseShopCustDto;
 import com.shop.ShopService.dtos.ResponseShopDto;
+import com.orders.OrdersService.dtos.ResponseOrderShopDto;
 import com.shop.ShopService.dtos.product.RequestProductShopDto;
 import com.shop.ShopService.exceptions.ShopIsNotFoundException;
 import com.shop.ShopService.exceptions.UserNotAutherizedException;
@@ -25,9 +27,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.print.DocFlavor;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -175,6 +175,7 @@ public class ShopServiceImpl implements ShopService{
     @Override
     public List<ResponseOrderDto> getAllOrdersByOwnerEmailId(String userName) throws UserNotAutherizedException, OrdersNotPlacedException, ShopIsNotFoundException {
         IdentityResponseDto identityResponseDto = identityFeignClient.getUserCredentials(userName);
+
         List<String> owner = Arrays.stream(identityResponseDto.getRoles().split(",")).toList();
 
         if(owner.contains("ROLE_CUSTOMER") && owner.size() == 1) {
@@ -189,5 +190,35 @@ public class ShopServiceImpl implements ShopService{
         }
 
         return orderFeignClient.getAllOrdersByShopName(shop.getShopName());
+    }
+
+
+    @Override
+    public List<ResponseOrderShopDto> getAllCustomersPerShopOrders(String userName) throws UserNotAutherizedException, OrdersNotPlacedException {
+
+        IdentityResponseDto identityResponseDto = identityFeignClient.getUserCredentials(userName);
+        List<String> owner = Arrays.stream(identityResponseDto.getRoles().split(",")).toList();
+
+        if(owner.contains("ROLE_CUSTOMER") && owner.size() == 1) {
+            throw new UserNotAutherizedException("You are UnAuthorized to get Orders from a shop...  "+identityResponseDto.getEmailId());
+        }
+        Shop shop = shopRepository.findByEmailId(identityResponseDto.getEmailId());
+
+        return orderFeignClient.getAllCustomersPerShopOrders(shop.getShopName());
+    }
+
+    @Override
+    public List<ResponseOrdersShopTotalDto> getTotalAmountForEveryCustomer(String userName) throws UserNotAutherizedException, OrdersNotPlacedException {
+        IdentityResponseDto identityResponse = identityFeignClient.getUserCredentials(userName);
+
+        List<String> owner = Arrays.stream(identityResponse.getRoles().split(",")).toList();
+
+        if(owner.contains("ROLE_CUSTOMER") && owner.size() == 1) {
+            throw new UserNotAutherizedException("You are UnAuthorized to get Orders from a shop...  "+identityResponse.getEmailId());
+        }
+        Shop shop = shopRepository.findByEmailId(identityResponse.getEmailId());
+
+        return orderFeignClient.getAllCustomersTotalAmountPerShopOrders(shop.getShopName());
+
     }
 }

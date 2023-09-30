@@ -2,6 +2,8 @@ package com.orders.OrdersService.controller;
 
 import com.orders.OrdersService.dtos.RequestOrderDto;
 import com.orders.OrdersService.dtos.ResponseOrderDto;
+import com.orders.OrdersService.dtos.ResponseOrderShopDto;
+import com.orders.OrdersService.dtos.ResponseOrdersShopTotalDto;
 import com.orders.OrdersService.exceptions.OrdersNotPlacedException;
 import com.orders.OrdersService.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,5 +37,17 @@ public class OrderController {
     public List<ResponseOrderDto> getAllOrdersByCustomerEmail(@PathVariable("customerEmail") String customerEmail) throws OrdersNotPlacedException {
 
         return orderService.getAllOrdersByCustomerEmail(customerEmail);
+    }
+
+    @GetMapping("/orders/shop/total/{shopName}")
+    public List<ResponseOrderShopDto> getAllCustomersPerShopOrders(@PathVariable("shopName") String shopName) throws OrdersNotPlacedException {
+
+        return orderService.getAllCustomersPerShopOrders(shopName);
+    }
+
+    @GetMapping("/orders/shop/total/amount/{shopName}")
+    public List<ResponseOrdersShopTotalDto> getAllCustomersTotalAmountPerShopOrders(@PathVariable("shopName") String shopName) throws OrdersNotPlacedException {
+
+        return orderService.getAllCustomersTotalAmountPerShopOrders(shopName);
     }
 }
