@@ -1,14 +1,15 @@
 package com.shop.ShopService.service;
 
 import com.orders.OrdersService.dtos.ResponseOrderDto;
+import com.orders.OrdersService.dtos.ResponseOrdersShopTotalDto;
 import com.orders.OrdersService.exceptions.OrdersNotPlacedException;
 import com.products.ProductService.dtos.RequestOwnerDto;
-import com.products.ProductService.dtos.RequestProductDto;
 import com.products.ProductService.dtos.ResponseProductDto;
 import com.products.ProductService.exceptions.ProductsNotAvailableWithProductAndSellerEmail;
 import com.shop.ShopService.dtos.RequestShopDtos;
 import com.shop.ShopService.dtos.ResponseShopCustDto;
 import com.shop.ShopService.dtos.ResponseShopDto;
+import com.orders.OrdersService.dtos.ResponseOrderShopDto;
 import com.shop.ShopService.dtos.product.RequestProductShopDto;
 import com.shop.ShopService.exceptions.ShopIsNotFoundException;
 import com.shop.ShopService.exceptions.UserNotAutherizedException;
@@ -30,4 +31,8 @@ public interface ShopService {
     ResponseProductDto updateProduct(String userName, RequestOwnerDto requestOwnerDto) throws UserNotFound, UserNotAutherizedException, ProductsNotAvailableWithProductAndSellerEmail;
 
     List<ResponseOrderDto> getAllOrdersByOwnerEmailId(String userName) throws UserNotAutherizedException, OrdersNotPlacedException, ShopIsNotFoundException;
+
+    List<ResponseOrderShopDto> getAllCustomersPerShopOrders(String userName) throws UserNotAutherizedException, OrdersNotPlacedException;
+
+    List<ResponseOrdersShopTotalDto> getTotalAmountForEveryCustomer(String userName) throws UserNotAutherizedException, OrdersNotPlacedException;
 }

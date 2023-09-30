@@ -1,7 +1,9 @@
 package com.shop.ShopService.controller;
 
 import com.orders.OrdersService.dtos.ResponseOrderDto;
+import com.orders.OrdersService.dtos.ResponseOrdersShopTotalDto;
 import com.orders.OrdersService.exceptions.OrdersNotPlacedException;
+import com.orders.OrdersService.dtos.ResponseOrderShopDto;
 import com.shop.ShopService.exceptions.ShopIsNotFoundException;
 import com.shop.ShopService.exceptions.UserNotAutherizedException;
 import com.shop.ShopService.service.ShopService;
@@ -27,4 +29,21 @@ public class OrderController {
 
         return shopService.getAllOrdersByOwnerEmailId(userName);
     }
+
+
+
+    //Based on particular date how many orders were placed by customer with total and address
+    @GetMapping("/shop/orders/customers")
+    public List<ResponseOrderShopDto> getAllCustomersPerShopOrders(@RequestHeader("LoggedInUser") String userName) throws UserNotAutherizedException, OrdersNotPlacedException {
+
+        return  shopService.getAllCustomersPerShopOrders(userName);
+    }
+
+
+    @GetMapping("/shop/orders/customers/total")
+    public List<ResponseOrdersShopTotalDto> getTotalAmountForEveryCustomer(@RequestHeader("LoggedInUser") String userName) throws UserNotAutherizedException, OrdersNotPlacedException {
+
+        return shopService.getTotalAmountForEveryCustomer(userName);
+    }
+
 }
