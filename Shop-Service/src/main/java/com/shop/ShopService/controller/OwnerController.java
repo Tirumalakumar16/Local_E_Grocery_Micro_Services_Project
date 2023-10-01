@@ -5,6 +5,7 @@ import com.products.ProductService.dtos.RequestProductDto;
 import com.products.ProductService.dtos.ResponseProductDto;
 import com.products.ProductService.exceptions.ProductsNotAvailableWithProductAndSellerEmail;
 import com.shop.ShopService.dtos.product.RequestProductShopDto;
+import com.shop.ShopService.exceptions.ShopIsNotFoundException;
 import com.shop.ShopService.exceptions.UserNotAutherizedException;
 import com.shop.ShopService.exceptions.UserNotFound;
 import com.shop.ShopService.service.ShopService;
@@ -27,7 +28,7 @@ public class OwnerController {
 
         try {
             return shopService.saveProduct(requestProductDto,userName);
-        } catch (UserNotFound e) {
+        } catch (UserNotFound | ShopIsNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
@@ -39,7 +40,7 @@ public class OwnerController {
 
     }
     @PutMapping("/product")
-    public ResponseProductDto updateProduct(@RequestHeader("LoggedInUser") String userName, @RequestBody RequestOwnerDto requestOwnerDto) throws UserNotFound, UserNotAutherizedException, ProductsNotAvailableWithProductAndSellerEmail {
+    public ResponseProductDto updateProduct(@RequestHeader("LoggedInUser") String userName, @RequestBody RequestOwnerDto requestOwnerDto) throws UserNotFound, UserNotAutherizedException, ProductsNotAvailableWithProductAndSellerEmail, ShopIsNotFoundException {
 
         return shopService.updateProduct(userName,requestOwnerDto);
     }

@@ -1,6 +1,7 @@
 package com.customer.CustomerService.controller;
 
 import com.customer.CustomerService.exceptions.CartServiceUpdationException;
+import com.customer.CustomerService.exceptions.CustomerDetailsNotAvailable;
 import com.customer.CustomerService.service.CustomerService;
 import com.payment.PaymentService.dtos.ResponsePaymentDto;
 import com.payment.PaymentService.exceptions.PaymentsNotFound;
@@ -20,7 +21,7 @@ public class CustomerPaymentController {
         this.customerService = customerService;
     }
     @GetMapping("/customer/payments")
-    public List<ResponsePaymentDto>  getAllPayments(@RequestHeader("LoggedInUser") String userName) throws CartServiceUpdationException, PaymentsNotFound {
+    public List<ResponsePaymentDto>  getAllPayments(@RequestHeader("LoggedInUser") String userName) throws  PaymentsNotFound, CustomerDetailsNotAvailable {
 
         return customerService.getAllPayments(userName);
     }

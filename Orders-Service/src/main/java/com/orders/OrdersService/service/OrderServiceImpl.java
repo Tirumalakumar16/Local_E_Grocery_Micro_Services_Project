@@ -4,6 +4,8 @@ import com.orders.OrdersService.dtos.RequestOrderDto;
 import com.orders.OrdersService.dtos.ResponseOrderDto;
 import com.orders.OrdersService.dtos.ResponseOrderShopDto;
 import com.orders.OrdersService.dtos.ResponseOrdersShopTotalDto;
+import com.orders.OrdersService.dtos.customer.ResponseOrderCustomerDateDto;
+import com.orders.OrdersService.dtos.customer.ResponseOrdersCustomerTotalDto;
 import com.orders.OrdersService.exceptions.OrdersNotPlacedException;
 import com.orders.OrdersService.feignclients.PaymentFeignClient;
 import com.orders.OrdersService.models.OrderDetails;
@@ -146,7 +148,29 @@ public class OrderServiceImpl implements OrderService{
         }
 
         return responseOrdersShopTotalDtos;
+    }
+
+    @Override
+    public List<ResponseOrdersCustomerTotalDto> getAllCustomersTotalAmountPerShop(String email) throws OrdersNotPlacedException {
+        List<ResponseOrdersCustomerTotalDto> responseOrdersShopTotalDtos = orderRepository.findTotalAmountForCustomerPerShop(email);
+
+        if (responseOrdersShopTotalDtos.isEmpty()) {
+            throw new OrdersNotPlacedException("Orders Not found on "+email+", Please Order to get total purchases.");
+        }
+
+        return responseOrdersShopTotalDtos;
+    }
 
 
+    @Override
+    public List<ResponseOrderCustomerDateDto> getAllCustomerOrdersOnDate(String email) throws OrdersNotPlacedException {
+
+        List<ResponseOrderCustomerDateDto> responseOrdersShopTotalDtos = orderRepository.findAllOrdersOnDateForCustomer(email);
+
+        if (responseOrdersShopTotalDtos.isEmpty()) {
+            throw new OrdersNotPlacedException("Orders Not found on "+email+", Please order to see all Orders on Date.");
+        }
+
+        return responseOrdersShopTotalDtos;
     }
 }

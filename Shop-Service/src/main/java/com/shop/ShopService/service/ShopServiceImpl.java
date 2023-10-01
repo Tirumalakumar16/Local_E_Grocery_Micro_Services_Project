@@ -90,7 +90,7 @@ public class ShopServiceImpl implements ShopService{
 
 
     @Override
-    public List<ResponseShopDto> getAll(String userName) throws UserNotAutherizedException {
+    public List<ResponseShopDto> getAll(String userName) throws UserNotAutherizedException, ShopIsNotFoundException {
         IdentityResponseDto identityResponseDto = identityFeignClient.getUserCredentials(userName);
         List<String> owner = Arrays.stream(identityResponseDto.getRoles().split(",")).toList();
 
@@ -98,25 +98,36 @@ public class ShopServiceImpl implements ShopService{
             throw new UserNotAutherizedException("You dont have access to get a shops, please signup as owner...  "+identityResponseDto.getEmailId());
         }
         List<Shop> shops = shopRepository.findAll();
+        if(shops.isEmpty()) {
+            throw new ShopIsNotFoundException("No shops are registered yet..");
+        }
 
         return Arrays.asList(modelMapper.map(shops, ResponseShopDto[].class));
     }
 
     @Override
-    public List<ResponseShopCustDto> findByCity(String city) {
+    public List<ResponseShopCustDto> findByCity(String city) throws ShopIsNotFoundException {
 
         List<Shop> shops = shopRepository.findByCity(city);
+
+        if(shops.isEmpty()) {
+            throw new ShopIsNotFoundException("No shops are registered yet on this City "+city);
+        }
 
         return Arrays.asList(modelMapper.map(shops, ResponseShopCustDto[].class));
     }
 
 
     @Override
-    public ResponseProductDto saveProduct(RequestProductShopDto requestProductDto, String userName) throws UserNotFound {
+    public ResponseProductDto saveProduct(RequestProductShopDto requestProductDto, String userName) throws UserNotFound, ShopIsNotFoundException {
 
         IdentityResponseDto identityResponseDto = identityFeignClient.getUserCredentials(userName);
         Shop shop = shopRepository.findByEmailId(identityResponseDto.getEmailId());
 
+        if(shop == null) {
+
+            throw new ShopIsNotFoundException("Please add your shop to www.localGrocery.com.");
+        }
 
         List<String> auth = Arrays.stream(identityResponseDto.getRoles().split(",")).toList();
         if(auth.contains("ROLE_CUSTOMER") && auth.size()==1){
@@ -156,7 +167,7 @@ public class ShopServiceImpl implements ShopService{
 
 
     @Override
-    public ResponseProductDto updateProduct(String userName, RequestOwnerDto requestOwnerDto) throws UserNotAutherizedException, ProductsNotAvailableWithProductAndSellerEmail {
+    public ResponseProductDto updateProduct(String userName, RequestOwnerDto requestOwnerDto) throws UserNotAutherizedException, ProductsNotAvailableWithProductAndSellerEmail, ShopIsNotFoundException {
         IdentityResponseDto identityResponseDto = identityFeignClient.getUserCredentials(userName);
         List<String> owner = Arrays.stream(identityResponseDto.getRoles().split(",")).toList();
 
@@ -165,6 +176,11 @@ public class ShopServiceImpl implements ShopService{
         }
 
         Shop shop = shopRepository.findByEmailId(identityResponseDto.getEmailId());
+
+        if(shop == null) {
+
+            throw new ShopIsNotFoundException("Please add your shop to www.localGrocery.com.");
+        }
         requestOwnerDto.setEmailId(identityResponseDto.getEmailId());
         requestOwnerDto.setShopName(shop.getShopName());
 
@@ -194,7 +210,7 @@ public class ShopServiceImpl implements ShopService{
 
 
     @Override
-    public List<ResponseOrderShopDto> getAllCustomersPerShopOrders(String userName) throws UserNotAutherizedException, OrdersNotPlacedException {
+    public List<ResponseOrderShopDto> getAllCustomersPerShopOrders(String userName) throws UserNotAutherizedException, OrdersNotPlacedException, ShopIsNotFoundException {
 
         IdentityResponseDto identityResponseDto = identityFeignClient.getUserCredentials(userName);
         List<String> owner = Arrays.stream(identityResponseDto.getRoles().split(",")).toList();
@@ -203,12 +219,16 @@ public class ShopServiceImpl implements ShopService{
             throw new UserNotAutherizedException("You are UnAuthorized to get Orders from a shop...  "+identityResponseDto.getEmailId());
         }
         Shop shop = shopRepository.findByEmailId(identityResponseDto.getEmailId());
+        if(shop == null) {
+
+            throw new ShopIsNotFoundException("Please add your shop to www.localGrocery.com.");
+        }
 
         return orderFeignClient.getAllCustomersPerShopOrders(shop.getShopName());
     }
 
     @Override
-    public List<ResponseOrdersShopTotalDto> getTotalAmountForEveryCustomer(String userName) throws UserNotAutherizedException, OrdersNotPlacedException {
+    public List<ResponseOrdersShopTotalDto> getTotalAmountForEveryCustomer(String userName) throws UserNotAutherizedException, OrdersNotPlacedException, ShopIsNotFoundException {
         IdentityResponseDto identityResponse = identityFeignClient.getUserCredentials(userName);
 
         List<String> owner = Arrays.stream(identityResponse.getRoles().split(",")).toList();
@@ -217,6 +237,9 @@ public class ShopServiceImpl implements ShopService{
             throw new UserNotAutherizedException("You are UnAuthorized to get Orders from a shop...  "+identityResponse.getEmailId());
         }
         Shop shop = shopRepository.findByEmailId(identityResponse.getEmailId());
+        if (shop == null) {
+            throw new ShopIsNotFoundException("Please add your shop");
+        }
 
         return orderFeignClient.getAllCustomersTotalAmountPerShopOrders(shop.getShopName());
 

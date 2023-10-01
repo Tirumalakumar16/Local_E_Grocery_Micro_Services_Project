@@ -20,19 +20,19 @@ import java.util.List;
 public interface ShopService {
     ResponseShopDto saveShop(RequestShopDtos requestShopDtos,String userName) throws UserNotFound;
 
-    List<ResponseShopDto> getAll(String userName) throws  UserNotAutherizedException;
+    List<ResponseShopDto> getAll(String userName) throws UserNotAutherizedException, ShopIsNotFoundException;
 
-    List<ResponseShopCustDto> findByCity(String city);
+    List<ResponseShopCustDto> findByCity(String city) throws ShopIsNotFoundException;
 
-    ResponseProductDto saveProduct(RequestProductShopDto requestProductDto, String userName) throws UserNotFound;
+    ResponseProductDto saveProduct(RequestProductShopDto requestProductDto, String userName) throws UserNotFound, ShopIsNotFoundException;
     
     List<ResponseProductDto> getAllProducts(String userName) throws UserNotFound, ProductsNotAvailableWithProductAndSellerEmail;
 
-    ResponseProductDto updateProduct(String userName, RequestOwnerDto requestOwnerDto) throws UserNotFound, UserNotAutherizedException, ProductsNotAvailableWithProductAndSellerEmail;
+    ResponseProductDto updateProduct(String userName, RequestOwnerDto requestOwnerDto) throws UserNotFound, UserNotAutherizedException, ProductsNotAvailableWithProductAndSellerEmail, ShopIsNotFoundException;
 
     List<ResponseOrderDto> getAllOrdersByOwnerEmailId(String userName) throws UserNotAutherizedException, OrdersNotPlacedException, ShopIsNotFoundException;
 
-    List<ResponseOrderShopDto> getAllCustomersPerShopOrders(String userName) throws UserNotAutherizedException, OrdersNotPlacedException;
+    List<ResponseOrderShopDto> getAllCustomersPerShopOrders(String userName) throws UserNotAutherizedException, OrdersNotPlacedException, ShopIsNotFoundException;
 
-    List<ResponseOrdersShopTotalDto> getTotalAmountForEveryCustomer(String userName) throws UserNotAutherizedException, OrdersNotPlacedException;
+    List<ResponseOrdersShopTotalDto> getTotalAmountForEveryCustomer(String userName) throws UserNotAutherizedException, OrdersNotPlacedException, ShopIsNotFoundException;
 }

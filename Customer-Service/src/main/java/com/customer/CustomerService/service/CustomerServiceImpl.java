@@ -21,6 +21,8 @@ import com.ktkapp.addressservice.exceptions.AddressNotFoundWithEmail;
 import com.ktkapp.addressservice.models.Address;
 import com.orders.OrdersService.dtos.RequestOrderDto;
 import com.orders.OrdersService.dtos.ResponseOrderDto;
+import com.orders.OrdersService.dtos.customer.ResponseOrderCustomerDateDto;
+import com.orders.OrdersService.dtos.customer.ResponseOrdersCustomerTotalDto;
 import com.orders.OrdersService.exceptions.OrdersNotPlacedException;
 import com.payment.PaymentService.dtos.ResponsePaymentDto;
 import com.payment.PaymentService.exceptions.PaymentsNotFound;
@@ -299,28 +301,55 @@ public class CustomerServiceImpl implements CustomerService {
 
 
     @Override
-    public List<ResponseOrderDto> getAllOrdersByCustomerEmail(String userName) throws CartServiceUpdationException, OrdersNotPlacedException {
+    public List<ResponseOrderDto> getAllOrdersByCustomerEmail(String userName) throws  OrdersNotPlacedException, CustomerDetailsNotAvailable {
         IdentityResponseDto identityResponseDto = identityFeignClient.getUserCredentials(userName);
 
         List<String> authorization = Arrays.stream(identityResponseDto.getRoles().split(",")).toList();
 
         if(!authorization.contains("ROLE_CUSTOMER")){
-            throw  new CartServiceUpdationException("you are not authorize to get All Products...");
+            throw  new CustomerDetailsNotAvailable("you are not authorize to get All Products...");
         }
 
         return orderFeignClient.getAllOrdersByCustomerEmail(identityResponseDto.getEmailId());
     }
 
     @Override
-    public List<ResponsePaymentDto> getAllPayments(String userName) throws CartServiceUpdationException, PaymentsNotFound {
+    public List<ResponsePaymentDto> getAllPayments(String userName) throws PaymentsNotFound, CustomerDetailsNotAvailable {
         IdentityResponseDto identityResponseDto = identityFeignClient.getUserCredentials(userName);
 
         List<String> authorization = Arrays.stream(identityResponseDto.getRoles().split(",")).toList();
 
         if(!authorization.contains("ROLE_CUSTOMER")){
-            throw  new CartServiceUpdationException("you are not authorize to get payment details...");
+            throw  new CustomerDetailsNotAvailable("you are not authorize to get payment details...");
         }
 
         return paymentFeignClient.getAllPayments(identityResponseDto.getEmailId());
+    }
+
+    @Override
+    public List<ResponseOrdersCustomerTotalDto> getCustomersTotalAmount(String userName) throws CustomerDetailsNotAvailable, OrdersNotPlacedException {
+        IdentityResponseDto identityResponseDto = identityFeignClient.getUserCredentials(userName);
+
+        List<String> authorization = Arrays.stream(identityResponseDto.getRoles().split(",")).toList();
+
+        if(!authorization.contains("ROLE_CUSTOMER")){
+            throw  new CustomerDetailsNotAvailable("you are not authorize to get Orders total details...");
+        }
+
+        return orderFeignClient.getAllCustomersTotalAmountPerShop(identityResponseDto.getEmailId());
+    }
+
+
+    @Override
+    public List<ResponseOrderCustomerDateDto> getCustomersTotalAndDate(String userName) throws CustomerDetailsNotAvailable, OrdersNotPlacedException {
+        IdentityResponseDto identityResponseDto = identityFeignClient.getUserCredentials(userName);
+
+        List<String> authorization = Arrays.stream(identityResponseDto.getRoles().split(",")).toList();
+
+        if(!authorization.contains("ROLE_CUSTOMER")){
+            throw  new CustomerDetailsNotAvailable("you are not authorize to get orders details...");
+        }
+
+        return orderFeignClient.getAllCustomerOrdersOnDate(identityResponseDto.getEmailId());
     }
 }

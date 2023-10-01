@@ -14,6 +14,8 @@ import com.customer.CustomerService.exceptions.CustomerDetailsNotAvailable;
 import com.ktkapp.addressservice.dtos.*;
 import com.ktkapp.addressservice.exceptions.AddressNotFoundWithEmail;
 import com.orders.OrdersService.dtos.ResponseOrderDto;
+import com.orders.OrdersService.dtos.customer.ResponseOrderCustomerDateDto;
+import com.orders.OrdersService.dtos.customer.ResponseOrdersCustomerTotalDto;
 import com.orders.OrdersService.exceptions.OrdersNotPlacedException;
 import com.payment.PaymentService.dtos.ResponsePaymentDto;
 import com.payment.PaymentService.exceptions.PaymentsNotFound;
@@ -61,7 +63,11 @@ public interface CustomerService {
 
     String order(String userName, RequestAddressCustDto addressCustDto) throws AddressNotFoundWithEmail, CartServiceUpdationException, CartDetailsNotFound;
 
-    List<ResponseOrderDto> getAllOrdersByCustomerEmail(String userName) throws CartServiceUpdationException, OrdersNotPlacedException;
+    List<ResponseOrderDto> getAllOrdersByCustomerEmail(String userName) throws  OrdersNotPlacedException, CustomerDetailsNotAvailable;
 
-    List<ResponsePaymentDto> getAllPayments(String userName) throws CartServiceUpdationException, PaymentsNotFound;
+    List<ResponsePaymentDto> getAllPayments(String userName) throws  PaymentsNotFound, CustomerDetailsNotAvailable;
+
+    List<ResponseOrdersCustomerTotalDto> getCustomersTotalAmount(String userName) throws CustomerDetailsNotAvailable, OrdersNotPlacedException;
+
+    List<ResponseOrderCustomerDateDto> getCustomersTotalAndDate(String userName) throws CustomerDetailsNotAvailable, OrdersNotPlacedException;
 }
