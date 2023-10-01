@@ -4,6 +4,8 @@ import com.orders.OrdersService.dtos.RequestOrderDto;
 import com.orders.OrdersService.dtos.ResponseOrderDto;
 import com.orders.OrdersService.dtos.ResponseOrderShopDto;
 import com.orders.OrdersService.dtos.ResponseOrdersShopTotalDto;
+import com.orders.OrdersService.dtos.customer.ResponseOrderCustomerDateDto;
+import com.orders.OrdersService.dtos.customer.ResponseOrdersCustomerTotalDto;
 import com.orders.OrdersService.exceptions.OrdersNotPlacedException;
 import com.orders.OrdersService.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,8 @@ public class OrderController {
         return orderService.getAllOrdersByCustomerEmail(customerEmail);
     }
 
+
+
     @GetMapping("/orders/shop/total/{shopName}")
     public List<ResponseOrderShopDto> getAllCustomersPerShopOrders(@PathVariable("shopName") String shopName) throws OrdersNotPlacedException {
 
@@ -49,5 +53,17 @@ public class OrderController {
     public List<ResponseOrdersShopTotalDto> getAllCustomersTotalAmountPerShopOrders(@PathVariable("shopName") String shopName) throws OrdersNotPlacedException {
 
         return orderService.getAllCustomersTotalAmountPerShopOrders(shopName);
+    }
+
+    @GetMapping("/orders/customer/total/amount/{email}")
+    public List<ResponseOrdersCustomerTotalDto> getAllCustomersTotalAmountPerShop(@PathVariable("email") String email) throws OrdersNotPlacedException {
+
+        return orderService.getAllCustomersTotalAmountPerShop(email);
+    }
+
+    @GetMapping("/orders/customer/onDate/{email}")
+    public List<ResponseOrderCustomerDateDto> getAllCustomerOrdersOnDate(@PathVariable("email") String email) throws OrdersNotPlacedException {
+
+        return orderService.getAllCustomerOrdersOnDate(email);
     }
 }

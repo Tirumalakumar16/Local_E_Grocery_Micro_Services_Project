@@ -34,14 +34,14 @@ public class OrderController {
 
     //Based on particular date how many orders were placed by customer with total and address
     @GetMapping("/shop/orders/customers")
-    public List<ResponseOrderShopDto> getAllCustomersPerShopOrders(@RequestHeader("LoggedInUser") String userName) throws UserNotAutherizedException, OrdersNotPlacedException {
+    public List<ResponseOrderShopDto> getAllCustomersPerShopOrders(@RequestHeader("LoggedInUser") String userName) throws UserNotAutherizedException, OrdersNotPlacedException, ShopIsNotFoundException {
 
         return  shopService.getAllCustomersPerShopOrders(userName);
     }
 
 
     @GetMapping("/shop/orders/customers/total")
-    public List<ResponseOrdersShopTotalDto> getTotalAmountForEveryCustomer(@RequestHeader("LoggedInUser") String userName) throws UserNotAutherizedException, OrdersNotPlacedException {
+    public List<ResponseOrdersShopTotalDto> getTotalAmountForEveryCustomer(@RequestHeader("LoggedInUser") String userName) throws UserNotAutherizedException, OrdersNotPlacedException, ShopIsNotFoundException {
 
         return shopService.getTotalAmountForEveryCustomer(userName);
     }
