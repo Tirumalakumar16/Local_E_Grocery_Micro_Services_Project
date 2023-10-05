@@ -12,6 +12,7 @@ import com.orders.OrdersService.dtos.ResponseOrderDto;
 import com.orders.OrdersService.dtos.customer.ResponseOrderCustomerDateDto;
 import com.orders.OrdersService.dtos.customer.ResponseOrdersCustomerTotalDto;
 import com.orders.OrdersService.exceptions.OrdersNotPlacedException;
+import com.orders.OrdersService.exceptions.PaymentFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +28,7 @@ public class CustomerOrderController {
         this.customerService = customerService;
     }
     @PostMapping("/customer/order")
-    public String order(@RequestHeader("LoggedInUser") String userName,@RequestBody RequestAddressCustDto addressCustDto) throws AddressNotFoundWithEmail, CartServiceUpdationException, CartDetailsNotFound {
+    public String order(@RequestHeader("LoggedInUser") String userName,@RequestBody RequestAddressCustDto addressCustDto) throws AddressNotFoundWithEmail, CartServiceUpdationException, CartDetailsNotFound, OrdersNotPlacedException, PaymentFailedException {
 
         return customerService.order(userName,addressCustDto);
     }

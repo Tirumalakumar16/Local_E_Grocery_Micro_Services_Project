@@ -7,7 +7,9 @@ import com.orders.OrdersService.dtos.ResponseOrdersShopTotalDto;
 import com.orders.OrdersService.dtos.customer.ResponseOrderCustomerDateDto;
 import com.orders.OrdersService.dtos.customer.ResponseOrdersCustomerTotalDto;
 import com.orders.OrdersService.exceptions.OrdersNotPlacedException;
+import com.orders.OrdersService.exceptions.PaymentFailedException;
 import com.orders.OrdersService.service.OrderService;
+import com.products.ProductService.exceptions.ProductsNotAvailableWithProductName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +25,7 @@ public class OrderController {
     }
 
     @PostMapping("/order")
-    public String orderFromCart(@RequestBody List<RequestOrderDto> requestOrderDto) {
+    public String orderFromCart(@RequestBody List<RequestOrderDto> requestOrderDto) throws PaymentFailedException, OrdersNotPlacedException, ProductsNotAvailableWithProductName {
 
          return orderService.orderFromCart(requestOrderDto);
 

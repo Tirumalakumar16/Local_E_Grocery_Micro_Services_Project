@@ -1,14 +1,13 @@
 package com.products.ProductService.service;
 
-import com.products.ProductService.dtos.RequestOwnerDto;
-import com.products.ProductService.dtos.RequestProductDto;
-import com.products.ProductService.dtos.ResponseProductCustDto;
-import com.products.ProductService.dtos.ResponseProductDto;
+import com.products.ProductService.dtos.*;
 import com.products.ProductService.exceptions.ProductsNotAvailableWithProductAndSellerEmail;
 import com.products.ProductService.exceptions.ProductsNotAvailableWithProductName;
 import com.products.ProductService.exceptions.ProductsNotAvailableWithShopName;
+import com.products.ProductService.models.Product;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductService {
     ResponseProductDto saveProduct(RequestProductDto requestProductDto);
@@ -22,4 +21,6 @@ public interface ProductService {
     ResponseProductDto updateProduct(RequestOwnerDto requestOwnerDto) throws  ProductsNotAvailableWithProductAndSellerEmail;
 
     List<ResponseProductDto> getByEmail(String emailId) throws ProductsNotAvailableWithProductAndSellerEmail;
+
+    void updateByCustomer(RequestCustomerProductDto requestCustomerProductDto);
 }

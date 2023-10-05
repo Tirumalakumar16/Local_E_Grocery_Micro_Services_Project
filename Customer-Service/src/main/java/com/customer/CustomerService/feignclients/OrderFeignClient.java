@@ -5,6 +5,7 @@ import com.orders.OrdersService.dtos.ResponseOrderDto;
 import com.orders.OrdersService.dtos.customer.ResponseOrderCustomerDateDto;
 import com.orders.OrdersService.dtos.customer.ResponseOrdersCustomerTotalDto;
 import com.orders.OrdersService.exceptions.OrdersNotPlacedException;
+import com.orders.OrdersService.exceptions.PaymentFailedException;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +20,7 @@ public interface OrderFeignClient {
     @GetMapping("/orders/customer/total/amount/{email}")
     public List<ResponseOrdersCustomerTotalDto> getAllCustomersTotalAmountPerShop(@PathVariable("email") String email) throws OrdersNotPlacedException;
     @PostMapping("/order")
-    public String orderFromCart(@RequestBody List<RequestOrderDto> requestOrderDto);
+    public String orderFromCart(@RequestBody List<RequestOrderDto> requestOrderDto) throws PaymentFailedException, OrdersNotPlacedException;
 
     @GetMapping("/orders/customer/{customerEmail}")
     public List<ResponseOrderDto> getAllOrdersByCustomerEmail(@PathVariable("customerEmail") String customerEmail) throws OrdersNotPlacedException;

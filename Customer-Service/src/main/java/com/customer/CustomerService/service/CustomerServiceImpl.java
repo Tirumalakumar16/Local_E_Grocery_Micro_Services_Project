@@ -24,6 +24,7 @@ import com.orders.OrdersService.dtos.ResponseOrderDto;
 import com.orders.OrdersService.dtos.customer.ResponseOrderCustomerDateDto;
 import com.orders.OrdersService.dtos.customer.ResponseOrdersCustomerTotalDto;
 import com.orders.OrdersService.exceptions.OrdersNotPlacedException;
+import com.orders.OrdersService.exceptions.PaymentFailedException;
 import com.payment.PaymentService.dtos.ResponsePaymentDto;
 import com.payment.PaymentService.exceptions.PaymentsNotFound;
 import com.products.ProductService.dtos.ResponseProductCustDto;
@@ -248,7 +249,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 
     @Override
-    public String order(String userName, RequestAddressCustDto requestAddressCustDto) throws AddressNotFoundWithEmail, CartServiceUpdationException, CartDetailsNotFound {
+    public String order(String userName, RequestAddressCustDto requestAddressCustDto) throws AddressNotFoundWithEmail, CartServiceUpdationException, CartDetailsNotFound, OrdersNotPlacedException, PaymentFailedException {
 
         IdentityResponseDto identityResponseDto = identityFeignClient.getUserCredentials(userName);
 
@@ -269,9 +270,6 @@ public class CustomerServiceImpl implements CustomerService {
             throw  new AddressNotFoundWithEmail(requestAddressCustDto.getHouseNumber()+" Doesn't exists, You have entered wrong house Number please check....");
         }
 
-
-
-
         List<RequestOrderDto> requestOrderDtos = new ArrayList<>();
 
         for(ResponseCartDto responseCartDto : responseCartDtos) {
@@ -284,11 +282,8 @@ public class CustomerServiceImpl implements CustomerService {
             requestOrderDto.setCustomerEmailId(identityResponseDto.getEmailId());
             requestOrderDto.setProductName(responseCartDto.getProductName());
             requestOrderDto.setShopName(responseCartDto.getShopName());
-
             requestOrderDto.setZip(address.getZip());
             requestOrderDto.setHouseNumber(address.getHouseNumber());
-
-
             requestOrderDtos.add(requestOrderDto);
 
         }

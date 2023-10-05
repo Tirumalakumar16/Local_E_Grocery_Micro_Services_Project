@@ -7,20 +7,24 @@ import com.orders.OrdersService.dtos.ResponseOrdersShopTotalDto;
 import com.orders.OrdersService.dtos.customer.ResponseOrderCustomerDateDto;
 import com.orders.OrdersService.dtos.customer.ResponseOrdersCustomerTotalDto;
 import com.orders.OrdersService.exceptions.OrdersNotPlacedException;
+import com.orders.OrdersService.exceptions.PaymentFailedException;
 import com.orders.OrdersService.feignclients.PaymentFeignClient;
+import com.orders.OrdersService.feignclients.ProductFeignClient;
 import com.orders.OrdersService.models.OrderDetails;
 import com.orders.OrdersService.repository.OrderRepository;
 import com.payment.PaymentService.dtos.RequestPaymentDto;
 import com.payment.PaymentService.dtos.ResponsePaymentDto;
 import com.payment.PaymentService.models.PaymentMode;
+import com.products.ProductService.dtos.RequestCustomerProductDto;
+import com.products.ProductService.dtos.ResponseProductCustDto;
+import com.products.ProductService.dtos.ResponseProductDto;
+import com.products.ProductService.exceptions.ProductsNotAvailableWithProductName;
+import com.products.ProductService.models.Product;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class OrderServiceImpl implements OrderService{
@@ -30,16 +34,18 @@ public class OrderServiceImpl implements OrderService{
 
     private PaymentFeignClient paymentFeignClient;
 
+    private ProductFeignClient productFeignClient;
+
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository, ModelMapper modelMapper, PaymentFeignClient paymentFeignClient) {
+    public OrderServiceImpl(OrderRepository orderRepository, ModelMapper modelMapper, PaymentFeignClient paymentFeignClient, ProductFeignClient productFeignClient) {
         this.orderRepository = orderRepository;
         this.modelMapper = modelMapper;
         this.paymentFeignClient = paymentFeignClient;
+        this.productFeignClient = productFeignClient;
     }
 
     @Override
-    public String orderFromCart(List<RequestOrderDto> requestOrderDto) {
-
+    public String orderFromCart(List<RequestOrderDto> requestOrderDto) throws PaymentFailedException, OrdersNotPlacedException, ProductsNotAvailableWithProductName {
 
         List<OrderDetails> orderDetails = new ArrayList<>();
         for(RequestOrderDto requestOrderDto1: requestOrderDto) {
@@ -60,20 +66,48 @@ public class OrderServiceImpl implements OrderService{
 
         }
 
+        List<RequestCustomerProductDto> requestList = new ArrayList<>();
+
+        for (OrderDetails orderDetails1 : orderDetails) {
+            RequestCustomerProductDto requestCustomerProductDto = new RequestCustomerProductDto();
+            requestCustomerProductDto.setProductName(orderDetails1.getProductName());
+            requestCustomerProductDto.setQuantity(orderDetails1.getQuantity());
+            requestCustomerProductDto.setShopName(orderDetails1.getShopName());
+            requestList.add(requestCustomerProductDto);
+
+        }
+
+        List<RequestCustomerProductDto> updatedListForCustomerUpdation = new ArrayList<>();
+
+        for(RequestCustomerProductDto requestCustomerProductDto: requestList) {
+
+            ResponseProductCustDto responseProductDto = productFeignClient.getProduct(requestCustomerProductDto.getProductName());
+            int quantity = responseProductDto.getQuantity();
+            if(quantity<requestCustomerProductDto.getQuantity()) {
+                throw new OrdersNotPlacedException("Orders not placed Stock not available.");
+            }
+            int realQnty = quantity-requestCustomerProductDto.getQuantity();
+            requestCustomerProductDto.setQuantity(realQnty);
+
+            updatedListForCustomerUpdation.add(requestCustomerProductDto);
+        }
+
         double totalAmount =0;
 
         for(OrderDetails orderDetails1:orderDetails) {
-            
-            
+
             totalAmount = totalAmount+(orderDetails1.getPrice()*orderDetails1.getQuantity());
-            
-            
+
         }
 
         RequestPaymentDto requestPaymentDto= mapToPayment(requestOrderDto.get(0));
         requestPaymentDto.setTotalAmount(totalAmount);
 
         ResponsePaymentDto responsePaymentDto = paymentFeignClient.pay(requestPaymentDto);
+
+        if(requestPaymentDto.getCustomerName().isEmpty()) {
+            throw new PaymentFailedException("Orders not placed please try again");
+        }
 
         List<OrderDetails> updatedOrders = new ArrayList<>();
         for(OrderDetails orderDetails1 : orderDetails) {
@@ -83,8 +117,12 @@ public class OrderServiceImpl implements OrderService{
 
         }
 
-
         List<OrderDetails> orderDetails1 = orderRepository.saveAll(updatedOrders);
+
+        for (RequestCustomerProductDto requestCustomerProductDto : updatedListForCustomerUpdation) {
+
+                 productFeignClient.updateByCustomer(requestCustomerProductDto);
+        }
 
         return "Order Placed successfully ......";
         

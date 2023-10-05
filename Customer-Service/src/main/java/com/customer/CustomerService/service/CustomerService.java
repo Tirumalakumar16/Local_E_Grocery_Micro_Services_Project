@@ -17,6 +17,7 @@ import com.orders.OrdersService.dtos.ResponseOrderDto;
 import com.orders.OrdersService.dtos.customer.ResponseOrderCustomerDateDto;
 import com.orders.OrdersService.dtos.customer.ResponseOrdersCustomerTotalDto;
 import com.orders.OrdersService.exceptions.OrdersNotPlacedException;
+import com.orders.OrdersService.exceptions.PaymentFailedException;
 import com.payment.PaymentService.dtos.ResponsePaymentDto;
 import com.payment.PaymentService.exceptions.PaymentsNotFound;
 import com.products.ProductService.dtos.ResponseProductCustDto;
@@ -61,7 +62,7 @@ public interface CustomerService {
 
     List<ResponseCartDto> getAllProductsFromCart(String userName) throws CartDetailsNotFoundException, CartDetailsNotFound, CartServiceUpdationException;
 
-    String order(String userName, RequestAddressCustDto addressCustDto) throws AddressNotFoundWithEmail, CartServiceUpdationException, CartDetailsNotFound;
+    String order(String userName, RequestAddressCustDto addressCustDto) throws AddressNotFoundWithEmail, CartServiceUpdationException, CartDetailsNotFound, OrdersNotPlacedException, PaymentFailedException;
 
     List<ResponseOrderDto> getAllOrdersByCustomerEmail(String userName) throws  OrdersNotPlacedException, CustomerDetailsNotAvailable;
 

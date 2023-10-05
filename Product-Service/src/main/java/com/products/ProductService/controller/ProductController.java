@@ -1,18 +1,17 @@
 package com.products.ProductService.controller;
 
-import com.products.ProductService.dtos.RequestOwnerDto;
-import com.products.ProductService.dtos.RequestProductDto;
-import com.products.ProductService.dtos.ResponseProductCustDto;
-import com.products.ProductService.dtos.ResponseProductDto;
+import com.products.ProductService.dtos.*;
 import com.products.ProductService.exceptions.ProductsNotAvailableWithProductAndSellerEmail;
 import com.products.ProductService.exceptions.ProductsNotAvailableWithProductName;
 import com.products.ProductService.exceptions.ProductsNotAvailableWithShopName;
+import com.products.ProductService.models.Product;
 import com.products.ProductService.service.ProductService;
 import jakarta.ws.rs.Path;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class ProductController {
@@ -55,6 +54,12 @@ public class ProductController {
     public List<ResponseProductDto> getByEmail(@PathVariable("emailId") String emailId) throws ProductsNotAvailableWithProductAndSellerEmail {
 
         return productService.getByEmail(emailId);
+    }
+
+    @PutMapping("/product/customer")
+    public void updateByCustomer(@RequestBody RequestCustomerProductDto requestCustomerProductDto) {
+
+         productService.updateByCustomer(requestCustomerProductDto);
     }
 
 
