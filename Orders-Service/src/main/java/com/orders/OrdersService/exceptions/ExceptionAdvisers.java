@@ -15,4 +15,12 @@ public class ExceptionAdvisers {
         exceptionMessage.setExceptionMessage(exception.getMessage());
         return new ResponseEntity<>(exceptionMessage, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(PaymentFailedException.class)
+    public ResponseEntity<ExceptionMessage> ordersException2(Exception exception){
+
+        ExceptionMessage exceptionMessage = new ExceptionMessage();
+        exceptionMessage.setExceptionMessage(exception.getMessage());
+        return new ResponseEntity<>(exceptionMessage, HttpStatus.NOT_FOUND);
+    }
 }

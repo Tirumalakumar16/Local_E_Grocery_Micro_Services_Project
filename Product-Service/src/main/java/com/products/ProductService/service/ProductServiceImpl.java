@@ -1,10 +1,7 @@
 package com.products.ProductService.service;
 
 import com.netflix.discovery.converters.Auto;
-import com.products.ProductService.dtos.RequestOwnerDto;
-import com.products.ProductService.dtos.RequestProductDto;
-import com.products.ProductService.dtos.ResponseProductCustDto;
-import com.products.ProductService.dtos.ResponseProductDto;
+import com.products.ProductService.dtos.*;
 import com.products.ProductService.exceptions.ProductsNotAvailableWithProductAndSellerEmail;
 import com.products.ProductService.exceptions.ProductsNotAvailableWithProductName;
 import com.products.ProductService.exceptions.ProductsNotAvailableWithShopName;
@@ -18,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService{
@@ -120,5 +118,12 @@ public class ProductServiceImpl implements ProductService{
         }
 
         return Arrays.asList(modelMapper.map(products, ResponseProductDto[].class));
+    }
+
+
+    @Override
+    public void updateByCustomer(RequestCustomerProductDto requestCustomerProductDto) {
+
+         productRepository.updateQuantity(requestCustomerProductDto.getQuantity(),requestCustomerProductDto.getProductName(),requestCustomerProductDto.getShopName());
     }
 }

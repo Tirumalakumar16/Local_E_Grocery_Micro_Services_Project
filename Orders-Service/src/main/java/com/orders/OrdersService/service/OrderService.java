@@ -7,11 +7,13 @@ import com.orders.OrdersService.dtos.ResponseOrdersShopTotalDto;
 import com.orders.OrdersService.dtos.customer.ResponseOrderCustomerDateDto;
 import com.orders.OrdersService.dtos.customer.ResponseOrdersCustomerTotalDto;
 import com.orders.OrdersService.exceptions.OrdersNotPlacedException;
+import com.orders.OrdersService.exceptions.PaymentFailedException;
+import com.products.ProductService.exceptions.ProductsNotAvailableWithProductName;
 
 import java.util.List;
 
 public interface OrderService {
-    String orderFromCart(List<RequestOrderDto> requestOrderDto);
+    String orderFromCart(List<RequestOrderDto> requestOrderDto) throws PaymentFailedException, OrdersNotPlacedException, ProductsNotAvailableWithProductName;
 
     List<ResponseOrderDto> getAllOrdersByShopName(String shopName) throws OrdersNotPlacedException;
 
