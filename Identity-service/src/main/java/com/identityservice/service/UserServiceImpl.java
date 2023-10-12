@@ -40,13 +40,19 @@ public class UserServiceImpl implements UserService{
     public String saveUser(UserCredentialsRequest userCredentials) {
 
             UserCredentials userCredentials1 = new UserCredentials();
+            if(userCredentials.getUsername().length()<3) {
+                throw new IllegalArgumentException("please enter valid UserName.");
+            }
             userCredentials1.setUsername(userCredentials.getUsername());
             userCredentials1.setRoles(userCredentials.getRole());
-           userCredentials1.setPassword(passwordEncoder.encode(userCredentials.getPassword()));
-             userCredentials1.setEmailId(userCredentials.getEmailId());
-          userCredentials1.setActive(true);
-          userCredentials1.setCreatedOn(new Date());
-          userCredentials1.setUpdatedOn(new Date());
+            userCredentials1.setPassword(passwordEncoder.encode(userCredentials.getPassword()));
+            if(userCredentials.getEmailId().length()<3 || !(userCredentials.getEmailId().contains("@"))) {
+                throw new IllegalArgumentException("please enter valid email ID.");
+            }
+            userCredentials1.setEmailId(userCredentials.getEmailId());
+            userCredentials1.setActive(true);
+            userCredentials1.setCreatedOn(new Date());
+            userCredentials1.setUpdatedOn(new Date());
 
 
         userRepository.save(userCredentials1);
