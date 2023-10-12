@@ -75,11 +75,18 @@ public class CustomerServiceImpl implements CustomerService {
         IdentityResponseDto identityResponseDto = identityFeignClient.getUserCredentials(userName);
 
         Customer customer = new Customer();
+        if(requestCustomerDto.getCustomerName().length()<3) {
+                throw new IllegalArgumentException("please enter valid Name.");
+        }
         customer.setCustomerName(requestCustomerDto.getCustomerName());
         customer.setActive(true);
+
         customer.setEmailId(identityResponseDto.getEmailId());
         customer.setCreatedOn(new Date());
         customer.setUpdatedOn(new Date());
+        if(!(requestCustomerDto.getMobile().length() == 10)){
+            throw new IllegalArgumentException("Please enter valid mobile number....");
+        }
         customer.setMobile(requestCustomerDto.getMobile());
 
         Customer customer1 = customerRepository.save(customer);

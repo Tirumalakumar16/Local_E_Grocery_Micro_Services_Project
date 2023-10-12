@@ -74,7 +74,6 @@ public class OrderServiceImpl implements OrderService{
             requestCustomerProductDto.setQuantity(orderDetails1.getQuantity());
             requestCustomerProductDto.setShopName(orderDetails1.getShopName());
             requestList.add(requestCustomerProductDto);
-
         }
 
         List<RequestCustomerProductDto> updatedListForCustomerUpdation = new ArrayList<>();
