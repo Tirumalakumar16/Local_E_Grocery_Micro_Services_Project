@@ -5,21 +5,19 @@
 # Local E Grocery service is used to order all grocery items by customers from respected local shops.
 # Cart Service
 
-1. Customers can add products.
-2. Manipulate their own cart.
-3. securely access the products and place the all products.
-4. Shopping Cart Management:
+1. Shopping Cart Management:
 
-Implement the core functionality of adding, removing, and updating items in the shopping cart.
-Support multiple carts per user, allowing users to manage different shopping lists.
-5. Persistence:
+a. Implement the core functionality of adding, removing, and updating items in the shopping cart.
+b. Support multiple carts per user, allowing users to manage different shopping lists.
 
-Store cart data persistently to ensure that the user's cart contents are retained even if they log out or close their session.
+2. Persistence:
+
+a. Store cart data persistently to ensure that the user's cart contents are retained even if they log out or close their session.
 
 6. User Authentication:
 
-Integrate with the identity service to associate shopping carts with authenticated users.
-Ensure that only the authorized user can access and modify their cart.
+a. Integrate with the identity service to associate shopping carts with authenticated users.
+b. Ensure that only the authorized user can access and modify their cart.
 
 # Address Service
 
