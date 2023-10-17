@@ -12,5 +12,6 @@
 1.Customers can have Multiple addresses.
 2.Shop owners also mange their addresses.
 
+
 # Completely secure Management of Carts,Products,Addresses,Payments,Orders all services.
 # fully updated with Exceptions for each API.
