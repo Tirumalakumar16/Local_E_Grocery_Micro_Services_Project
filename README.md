@@ -8,6 +8,18 @@
 1. Customers can add products.
 2. Manipulate their own cart.
 3. securely access the products and place the all products.
+4. Shopping Cart Management:
+
+Implement the core functionality of adding, removing, and updating items in the shopping cart.
+Support multiple carts per user, allowing users to manage different shopping lists.
+5. Persistence:
+
+Store cart data persistently to ensure that the user's cart contents are retained even if they log out or close their session.
+
+6. User Authentication:
+
+Integrate with the identity service to associate shopping carts with authenticated users.
+Ensure that only the authorized user can access and modify their cart.
 
 # Address Service
 
