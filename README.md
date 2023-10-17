@@ -5,14 +5,14 @@
 # Local E Grocery service is used to order all grocery items by customers from respected local shops.
 # Cart Service
 
-1.Customers can add products.
-2.Manipulate their own cart.
-3.securely access the products and place the all products.
+1. Customers can add products.
+2. Manipulate their own cart.
+3. securely access the products and place the all products.
 
 # Address Service
 
 1. Customers can have Multiple addresses.
-2.Shop owners also mange their addresses.
+2. Shop owners also manage their addresses.
 
 # Completely secure Management of Carts,Products,Addresses,Payments,Orders all services.
 # fully updated with Exceptions for each API.
