@@ -15,8 +15,8 @@
 
 3. User Authentication:
 
-1. Integrate with the identity service to associate shopping carts with authenticated users.
-2. Ensure that only the authorized user can access and modify their cart.
+  1. Integrate with the identity service to associate shopping carts with authenticated users.
+  2. Ensure that only the authorized user can access and modify their cart.
 
 # Address Service
 
