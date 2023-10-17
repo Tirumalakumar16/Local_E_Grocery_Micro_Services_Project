@@ -13,6 +13,13 @@
 
 1. Customers can have Multiple addresses.
 2. Shop owners also manage their addresses.
+3. Manage their own Addresses.
+
+# Identity Service
+
+1. All customers are authenticated and autherized to do manage their own services.
+2. Based on roles given access to users to the local grocery web application.
+3. Without conflicting with other users data , users has idependent access to their own profiles and to manage them.
 
 # Completely secure Management of Carts,Products,Addresses,Payments,Orders all services.
 # fully updated with Exceptions for each API.
