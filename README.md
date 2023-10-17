@@ -22,7 +22,7 @@
 3. Our system employs role-based access control, granting users access based on their designated roles, thus safeguarding sensitive data and operations.
 4. users are granted autonomous, non-conflicting access to their individual profiles, allowing them to tailor and oversee their preferences without any concerns of data interference.
 
-User Authentication:
+  #  1. User Authentication:
 
 Implement user authentication mechanisms like username/password, multi-factor authentication, or OAuth.
 Verify user identities securely to prevent unauthorized access.
