@@ -17,9 +17,10 @@
 
 # Identity Service
 
-1. All customers are authenticated and autherized to do manage their own services.
-2. Based on roles given access to users to the local grocery web application.
-3. Without conflicting with other users data , users has idependent access to their own profiles and to manage them.
+1. Every customer enjoys the convenience of seamless authentication and authorization.
+2. Used JWT token to manage session.
+3. Our system employs role-based access control, granting users access based on their designated roles, thus safeguarding sensitive data and operations.
+4. users are granted autonomous, non-conflicting access to their individual profiles, allowing them to tailor and oversee their preferences without any concerns of data interference.
 
 # Completely secure Management of Carts,Products,Addresses,Payments,Orders all services.
 # fully updated with Exceptions for each API.
