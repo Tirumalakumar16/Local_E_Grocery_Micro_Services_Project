@@ -235,9 +235,19 @@
 
 1. Seamlessly integrate with other microservices, such as the Product Service for product availability and the Payment Service for payment processing and cart service for checkout.
 
+
 #### Scalability:
 
 1. Design the Order Service to scale horizontally to handle increasing order volumes and peaks in traffic, especially during high-demand periods.
+
+## Shop Service 
+
+#### Shop management
+1. Shop owner to register and manage their profile.
+
+#### Inventory Management Service:
+
+1. Monitor and update product availability based on orders and deliveries.
 
 
 
