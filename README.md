@@ -7,12 +7,12 @@
 
 1. Shopping Cart Management:
 
-a. Implement the core functionality of adding, removing, and updating items in the shopping cart.
-b. Support multiple carts per user, allowing users to manage different shopping lists.
+  a. Implement the core functionality of adding, removing, and updating items in the shopping cart.
+  b. Support multiple carts per user, allowing users to manage different shopping lists.
 
 2. Persistence:
 
-a. Store cart data persistently to ensure that the user's cart contents are retained even if they log out or close their session.
+  a. Store cart data persistently to ensure that the user's cart contents are retained even if they log out or close their session.
 
 6. User Authentication:
 
