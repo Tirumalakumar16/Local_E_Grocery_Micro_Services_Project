@@ -4,20 +4,19 @@
 # This Application is designed for to tackle in a situations like COVID-19.
 # Local E Grocery service is used to order all grocery items by customers from respected local shops.
 # Cart Service
-
 1. Shopping Cart Management:
 
-  a. Implement the core functionality of adding, removing, and updating items in the shopping cart.
-  b. Support multiple carts per user, allowing users to manage different shopping lists.
+  1. Implement the core functionality of adding, removing, and updating items in the shopping cart.
+  2. Support multiple carts per user, allowing users to manage different shopping lists.
 
 2. Persistence:
 
-  a. Store cart data persistently to ensure that the user's cart contents are retained even if they log out or close their session.
+  1. Store cart data persistently to ensure that the user's cart contents are retained even if they log out or close their session.
 
-6. User Authentication:
+3. User Authentication:
 
-a. Integrate with the identity service to associate shopping carts with authenticated users.
-b. Ensure that only the authorized user can access and modify their cart.
+1. Integrate with the identity service to associate shopping carts with authenticated users.
+2. Ensure that only the authorized user can access and modify their cart.
 
 # Address Service
 
