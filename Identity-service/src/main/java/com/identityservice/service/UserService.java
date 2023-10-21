@@ -1,8 +1,9 @@
 package com.identityservice.service;
 
 import com.identityservice.dtos.IdentityResponseDto;
+import com.identityservice.dtos.RequestResetPasswordDto;
 import com.identityservice.dtos.UserCredentialsRequest;
-import com.identityservice.model.UserCredentials;
+import com.identityservice.exceptions.UserNotFoundException;
 
 public interface UserService {
     String saveUser(UserCredentialsRequest userCredentials);
@@ -15,4 +16,6 @@ public interface UserService {
     IdentityResponseDto getCredentials(String userName);
 
     IdentityResponseDto getByEmail(String email);
+
+    void resetPassword(RequestResetPasswordDto requestResetPasswordDto) throws UserNotFoundException;
 }

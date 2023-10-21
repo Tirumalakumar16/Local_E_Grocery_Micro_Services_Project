@@ -16,7 +16,12 @@ public class ExceptionAdviser {
         return new ResponseEntity<>(errorMessage, HttpStatus.UNAUTHORIZED);
     }
 
-
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorMessage> exceptionHandling2(Exception exception) {
+        ErrorMessage errorMessage = new ErrorMessage();
+        errorMessage.setErrorMessage(exception.getMessage());
+        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+    }
 
 
 }
