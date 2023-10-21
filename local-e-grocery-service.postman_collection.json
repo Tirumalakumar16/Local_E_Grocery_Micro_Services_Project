@@ -1,0 +1,530 @@
+{
+	"info": {
+		"_postman_id": "bd4cc29e-1ada-4900-99c2-cba43231ee27",
+		"name": "local-e-grocery-service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "28155219"
+	},
+	"item": [
+		{
+			"name": "REGISTER",
+			"item": [
+				{
+					"name": "http://localhost:9000/www.localGrocery.com/register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n    \"username\":\"Kavitha\",\r\n    \"password\":\"ktk\",\r\n    \"emailId\":\"kaviktk@gmail.com\",\r\n    \"role\":\"ROLE_CUSTOMER\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8888/www.localGrocery.com/identity/api/register"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8888/www.localGrocery.com/identity/token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"Tirumala\",\r\n    \"password\":\"ktk\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8888/www.localGrocery.com/identity/api/token"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8888/www.localGrocery.com/identity/api/resetpassword",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"emailId\":\"ktktirumala061@gmail.com\",\r\n    \"newPassword\":\"ktk\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8888/www.localGrocery.com/identity/api/resetpassword"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "customer",
+			"item": [
+				{
+					"name": "product",
+					"item": [
+						{
+							"name": "http://localhost:8888/www.localGrocery.com/customer/customer/product",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJUaXJ1bWFsYSIsImlhdCI6MTY5NTk3NTczMSwiZXhwIjoxNjk1OTc5MzMxfQ.6ndLMcmbOko3P37ejRrDM75EwpChduNw6-Qtp2HQui8"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\r\n    \"shopName\":\"Nagababu BigBazar\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:8888/www.localGrocery.com/customer/api/customer/product"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "paymenys",
+					"item": [
+						{
+							"name": "http://localhost:8888/www.localGrocery.com/customer/api/customer/payments",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJUaXJ1bWFsYSIsImlhdCI6MTY5NTk5MTM5MSwiZXhwIjoxNjk1OTk0OTkxfQ.TMpCP_-3GOT8i1NQLkhnSZ8K1k2Tn-8Kxc3Dw-1DIUY"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8888/www.localGrocery.com/customer/api/customer/payments"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "orders",
+					"item": [
+						{
+							"name": "http://localhost:8888/www.localGrocery.com/customer/api/customer/orders/totalAmountPerShop",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYXR5YSIsImlhdCI6MTY5NjEzNDMzOSwiZXhwIjoxNjk2MTM3OTM5fQ.yKHwxZv3pQrq_nP4tG2Vb5GGhChhnaZb60YQaXrAeLs"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8888/www.localGrocery.com/customer/api/customer/orders/totalAmountPerShop"
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8888/www.localGrocery.com/customer/api/customer/orders",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJUaXJ1bWFsYSIsImlhdCI6MTY5NTk3MjY2MCwiZXhwIjoxNjk1OTc2MjYwfQ.NCHCdGGBFsI-nMF5I46oDNAgIHBRjBPm29_kiOfTjiU"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8888/www.localGrocery.com/customer/api/customer/orders"
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8888/www.localGrocery.com/customer/api/customer/orders/orderedOn/total",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJUaXJ1bWFsYSIsImlhdCI6MTY5NjEzNTE2MSwiZXhwIjoxNjk2MTM4NzYxfQ.uOxeVjp4A0qg9OrCrjSmRgrFAR3GzU_0y4U11D4zCD0"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8888/www.localGrocery.com/customer/api/customer/orders/orderedOn/total"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "http://localhost:8888/www.localGrocery.com/customer/customer",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYXR5YSIsImlhdCI6MTY5NTkwOTQ3MSwiZXhwIjoxNjk1OTEzMDcxfQ.7ChqeVcBjnwPKG7ODca2OXY7_NaN33Gz6aYD-Y4W7Mk"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n    \"customerName\":\"Satya H\",\r\n    \"mobile\":\"9564862123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8888/www.localGrocery.com/customer/api/customer"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8888/www.localGrocery.com/customer/customers",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJUaXJ1bWFsYSIsImlhdCI6MTY5NTk3NTczMSwiZXhwIjoxNjk1OTc5MzMxfQ.6ndLMcmbOko3P37ejRrDM75EwpChduNw6-Qtp2HQui8"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8888/www.localGrocery.com/customer/api/customers"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "address",
+			"item": [
+				{
+					"name": "http://localhost:8888/www.localGrocery.com/customer/customer/address",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJLYXZpdGhhIiwiaWF0IjoxNjk1OTgyMzAzLCJleHAiOjE2OTU5ODU5MDN9.ifZW1yqi-bBzAnFCm36GdPUm5EM0ttSQXL_dc2kR4bM"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n      \"houseNumber\":\"154-58-56\",\r\n    \"landMark\":\"Near Godavari Resorts\",\r\n    \"city\":\"DRP\",\r\n    \"streetName\":\"Kona Street\",\r\n    \"zip\":\"534320\",\r\n     \"district\":\"West Godavari\",\r\n    \"state\":\"Andhra Pradesh\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8888/www.localGrocery.com/customer/api/customer/address"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8888/www.localGrocery.com/customer/api/customer/address/",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJUaXJ1bWFsYSIsImlhdCI6MTY5NTk5MTM5MSwiZXhwIjoxNjk1OTk0OTkxfQ.TMpCP_-3GOT8i1NQLkhnSZ8K1k2Tn-8Kxc3Dw-1DIUY"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n    \"houseNumber\":\"1-153-2\"\r\n   \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8888/www.localGrocery.com/customer/api/customer/addresses"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "shop",
+			"item": [
+				{
+					"name": "products",
+					"item": [
+						{
+							"name": "http://localhost:8888/www.localGrocery.com/shop/product",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuYWdhYmFidSIsImlhdCI6MTY5NTcxNTc3MywiZXhwIjoxNjk1NzE5MzczfQ.ahDI3MzunnBHC-riZsgLnBr3qVZRZC6DNMDBH_pP9aU"
+									}
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\r\n    \"productName\":\"MTR Masala - Sambar Powder 200g\",\r\n    \"quantity\":100,\r\n    \"price\":120,\r\n    \"category\":\"Masalas & Spices\"\r\n\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:8888/www.localGrocery.com/shop/api/product"
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8888/www.localGrocery.com/shop/products",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJUaXJ1bWFsYSIsImlhdCI6MTY5NTk5MTM5MSwiZXhwIjoxNjk1OTk0OTkxfQ.TMpCP_-3GOT8i1NQLkhnSZ8K1k2Tn-8Kxc3Dw-1DIUY"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8888/www.localGrocery.com/shop/api/products"
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8888/www.localGrocery.com/shop/product",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuYWdhYmFidSIsImlhdCI6MTY5NTcxOTczMywiZXhwIjoxNjk1NzIzMzMzfQ.KcgKraaaw3mFkRi6hmIPtDU-WggDyktDvlZSl65WX88"
+									}
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n        \"productName\":\"BB Royal Bullet Raw Rice 5KG\",\r\n    \"quantity\":150\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:8888/www.localGrocery.com/shop/api/product"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "orders",
+					"item": [
+						{
+							"name": "http://localhost:8888/www.localGrocery.com/shop/api/shop/orders/customers",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYXR5YSIsImlhdCI6MTY5NjA4Njg2NiwiZXhwIjoxNjk2MDkwNDY2fQ.ldHpXcocDs0vhHugl3cHR7pAnLr4W0aPfnfe-kPf8hg"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8888/www.localGrocery.com/shop/api/shop/orders/customers"
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8888/www.localGrocery.com/shop/api/shop/orders/customers/total",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJHdXB0YSIsImlhdCI6MTY5NjA4NjA4NywiZXhwIjoxNjk2MDg5Njg3fQ._oQkfRckEb2xuz-r5XyFRLYbYM4BTlZgZHUvOsgcy4I"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8888/www.localGrocery.com/shop/api/shop/orders/customers/total"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "http://localhost:8888/www.localGrocery.com/shop/shop",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuYWdhYmFidSIsImlhdCI6MTY5NTY2NzA4OSwiZXhwIjoxNjk1NjcwNjg5fQ.gncesVlk2XwmMVB0B9VlT27w_AfMtzwnk65KH2KSXx0"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n    \"shopName\":\"Nagababu BigBazar\",\r\n    \"mobile\":\"9956584565\",\r\n    \"ownerName\":\"Nagababu Kudipudi\",\r\n    \"city\":\"Siddantham\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8888/www.localGrocery.com/shop/api/shop"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8888/www.localGrocery.com/shop/shops",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJUaXJ1bWFsYSIsImlhdCI6MTY5NTk3NTczMSwiZXhwIjoxNjk1OTc5MzMxfQ.6ndLMcmbOko3P37ejRrDM75EwpChduNw6-Qtp2HQui8"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8888/www.localGrocery.com/shop/api/shops"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8888/www.localGrocery.com/shop/api/shop/orders",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJUaXJ1bWFsYSIsImlhdCI6MTY5NTk3MzUzMywiZXhwIjoxNjk1OTc3MTMzfQ.zjgJ7hy8voQYTRCuL_pjRGI9toV3odEA0GlIJl4qmoE"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8888/www.localGrocery.com/shop/api/shop/orders"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "cart",
+			"item": [
+				{
+					"name": "http://localhost:8888/www.localGrocery.com/customer/api/customer/cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJUaXJ1bWFsYSIsImlhdCI6MTY5NTk5MTM5MSwiZXhwIjoxNjk1OTk0OTkxfQ.TMpCP_-3GOT8i1NQLkhnSZ8K1k2Tn-8Kxc3Dw-1DIUY"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n    \"productName\":\"Aashirvaad Chilli Powder-500g\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8888/www.localGrocery.com/customer/api/customer/cart"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8888/www.localGrocery.com/customer/api/customer/carts",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYXR5YSIsImlhdCI6MTY5NTkwOTQ3MSwiZXhwIjoxNjk1OTEzMDcxfQ.7ChqeVcBjnwPKG7ODca2OXY7_NaN33Gz6aYD-Y4W7Mk"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8888/www.localGrocery.com/customer/api/customer/carts"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8888/www.localGrocery.com/customer/api/customer/cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJUaXJ1bWFsYSIsImlhdCI6MTY5NTkyMjA2OCwiZXhwIjoxNjk1OTI1NjY4fQ.j4jV6nYQYiS6cgRVTQm_y9b3BetxdBpf20uKPX85xCU"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n    \"productName\":\"Everest Tikhalal Chilli Powder-Menasina Pudi-100g\",\r\n    \"quantity\":5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8888/www.localGrocery.com/customer/api/customer/cart"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "order",
+			"item": [
+				{
+					"name": "http://localhost:8888/www.localGrocery.com/customer/api/customer/order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJUaXJ1bWFsYSIsImlhdCI6MTY5NTk3NTczMSwiZXhwIjoxNjk1OTc5MzMxfQ.6ndLMcmbOko3P37ejRrDM75EwpChduNw6-Qtp2HQui8"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n   \r\n    \"houseNumber\":\"1-153-2\"\r\n    \r\n     \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8888/www.localGrocery.com/customer/api/customer/order"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
