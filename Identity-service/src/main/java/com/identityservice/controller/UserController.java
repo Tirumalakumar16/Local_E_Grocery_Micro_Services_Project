@@ -2,7 +2,9 @@ package com.identityservice.controller;
 
 import com.identityservice.dtos.AuthRequest;
 import com.identityservice.dtos.IdentityResponseDto;
+import com.identityservice.dtos.RequestResetPasswordDto;
 import com.identityservice.dtos.UserCredentialsRequest;
+import com.identityservice.exceptions.UserNotFoundException;
 import com.identityservice.service.security.JwtService;
 import com.identityservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +64,14 @@ public class UserController {
     public IdentityResponseDto getUserEmail(@PathVariable("email") String email) {
 
         return userService.getByEmail(email);
+    }
+
+    @PutMapping("/resetpassword")
+    public String resetPassword(@RequestBody RequestResetPasswordDto requestResetPasswordDto) throws UserNotFoundException {
+
+         userService.resetPassword(requestResetPasswordDto);
+
+        return "password changed successfully";
     }
 
 }

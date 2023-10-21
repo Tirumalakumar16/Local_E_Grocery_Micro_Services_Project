@@ -1,6 +1,7 @@
 package com.identityservice.service;
 
-import com.identityservice.model.enums.Constants;
+import com.identityservice.dtos.RequestResetPasswordDto;
+import com.identityservice.exceptions.UserNotFoundException;
 import com.identityservice.dtos.IdentityResponseDto;
 import com.identityservice.dtos.UserCredentialsRequest;
 import com.identityservice.model.UserCredentials;
@@ -107,6 +108,28 @@ public class UserServiceImpl implements UserService{
         identityResponseDto.setRoles(userCredentials.get().getRoles());
         identityResponseDto.setCreatedOn(userCredentials.get().getCreatedOn());
         return identityResponseDto;
+
+    }
+
+
+    @Override
+    public void resetPassword(RequestResetPasswordDto requestResetPasswordDto) throws UserNotFoundException {
+
+        Optional<UserCredentials> userCredentials = userRepository.findByEmailId(requestResetPasswordDto.getEmailId());
+
+        if(userCredentials.isEmpty()) {
+            throw new UserNotFoundException("please check the email , provided email not registered...!");
+        }
+        UserCredentials userCredentials2 = userCredentials.get();
+
+        if(requestResetPasswordDto.getNewPassword() != null) {
+
+            userCredentials2.setPassword(passwordEncoder.encode(requestResetPasswordDto.getNewPassword()));
+        }
+
+        userCredentials2.setUpdatedOn(new Date());
+
+        UserCredentials userCredentials1 = userRepository.save(userCredentials2);
 
     }
 }

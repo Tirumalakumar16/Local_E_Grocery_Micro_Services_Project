@@ -14,7 +14,8 @@ public class RouteValidator {
     public static final List<String> openEndPoints = Arrays.asList(
             "/www.localGrocery.com/identity/api/register",
             "/eureka",
-            "/www.localGrocery.com/identity/api/token"
+            "/www.localGrocery.com/identity/api/token",
+            "/www.localGrocery.com/identity/api/resetpassword"
 
     );
 

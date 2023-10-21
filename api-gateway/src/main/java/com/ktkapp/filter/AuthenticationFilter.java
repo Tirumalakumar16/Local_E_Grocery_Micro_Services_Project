@@ -41,8 +41,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     loggedInUser = exchange.getRequest().mutate().header("LoggedInUser", util.extractUsername(authHeader))
                             .build();
                 } catch (Exception e) {
-                    System.out.println("Invalid access...");
-                    throw new RuntimeException("un-Authorized access to application...Please login to Application");
+
+                    throw new RuntimeException("un-Authorized access to application...Please sign-in to Application");
                 }
             }
             return chain.filter(exchange.mutate().request(loggedInUser).build());

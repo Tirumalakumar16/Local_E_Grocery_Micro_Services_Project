@@ -10,6 +10,6 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<UserCredentials,Long> {
     Optional<UserCredentials> findByUsername(String username);
-    @Query(value ="select  * from identity_service.user_credentials a where a.email_id=?1" ,nativeQuery = true)
+    @Query(value ="select  * from grocery_identity.user_credentials a where a.email_id=?1" ,nativeQuery = true)
     Optional<UserCredentials> findByEmailId(String email);
 }

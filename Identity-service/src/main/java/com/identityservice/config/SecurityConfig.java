@@ -50,7 +50,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
-                .authorizeHttpRequests((auth)->auth.requestMatchers("/register","/token","/validate","/identity").permitAll())
+                .authorizeHttpRequests((auth)->auth.requestMatchers("/register","/token","/validate","/identity","/resetpassword").permitAll())
 //                .sessionManagement()
 //                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 //                .and()
