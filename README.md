@@ -248,6 +248,7 @@
 #### Inventory Management Service:
 
 1. Monitor and update product availability based on orders and deliveries.
+2. All Inventories are updated only by Seller/Owner.
 
 
 
