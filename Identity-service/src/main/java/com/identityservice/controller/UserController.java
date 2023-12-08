@@ -1,9 +1,7 @@
 package com.identityservice.controller;
 
-import com.identityservice.dtos.AuthRequest;
-import com.identityservice.dtos.IdentityResponseDto;
-import com.identityservice.dtos.RequestResetPasswordDto;
-import com.identityservice.dtos.UserCredentialsRequest;
+import com.identityservice.dtos.*;
+import com.identityservice.exceptions.PasswordNotMatchedException;
 import com.identityservice.exceptions.UserNotFoundException;
 import com.identityservice.service.security.JwtService;
 import com.identityservice.service.UserService;
@@ -11,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticatedPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
@@ -74,4 +73,23 @@ public class UserController {
         return "password changed successfully";
     }
 
+
+
+    //This not passed the test
+    @PutMapping("/changePassword")
+    public String changePassword(@RequestBody RequestOldToNewPassword requestOldToNewPassword, @RequestHeader("LoggedInUser") String user) throws PasswordNotMatchedException {
+
+        userService.changePassword(requestOldToNewPassword,user);
+
+        return "password changed successfully";
+    }
+
+    // For Logout API maintain JWT Blacklist for tokens who ever hit the url for /logout
+    //
+
+    @GetMapping("/sample")
+    public String getPass(@RequestHeader("LoggedinUser") String user) {
+
+        return userService.getPass(user);
+    }
 }

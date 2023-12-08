@@ -1,6 +1,8 @@
 package com.identityservice.service;
 
+import com.identityservice.dtos.RequestOldToNewPassword;
 import com.identityservice.dtos.RequestResetPasswordDto;
+import com.identityservice.exceptions.PasswordNotMatchedException;
 import com.identityservice.exceptions.UserNotFoundException;
 import com.identityservice.dtos.IdentityResponseDto;
 import com.identityservice.dtos.UserCredentialsRequest;
@@ -131,5 +133,40 @@ public class UserServiceImpl implements UserService{
 
         UserCredentials userCredentials1 = userRepository.save(userCredentials2);
 
+    }
+
+
+    @Override
+    public void changePassword(RequestOldToNewPassword requestOldToNewPassword, String user) throws PasswordNotMatchedException {
+
+        Optional<UserCredentials> userCredentials = userRepository.findByUsername(user);
+
+        if(userCredentials.isEmpty()) {
+            throw new UsernameNotFoundException("User not found");
+        }
+        UserCredentials userCredentials1 = userCredentials.get();
+//        String oldPassword = passwordEncoder.encode(requestOldToNewPassword.getOldPassword());
+
+        if(!passwordEncoder.matches(requestOldToNewPassword.getOldPassword(),userCredentials1.getPassword()) ) {
+            throw new PasswordNotMatchedException("Please check the password ,password is not same");
+        }
+        userCredentials1.setPassword(passwordEncoder.encode(requestOldToNewPassword.getNewPassword()));
+
+
+        userRepository.save(userCredentials1);
+
+    }
+
+
+    @Override
+    public String getPass(String user) {
+        Optional<UserCredentials> userCredentials = userRepository.findByUsername(user);
+
+        if(userCredentials.isEmpty()) {
+            throw new UsernameNotFoundException("User Not found");
+        }
+        UserCredentials userCredentials1 = userCredentials.get();
+
+        return userCredentials1.getPassword();
     }
 }

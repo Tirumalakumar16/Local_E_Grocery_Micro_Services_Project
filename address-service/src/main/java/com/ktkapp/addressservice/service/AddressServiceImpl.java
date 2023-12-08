@@ -4,8 +4,7 @@ import com.ktkapp.addressservice.dtos.*;
 import com.ktkapp.addressservice.exceptions.AddressNotFoundWithEmail;
 import com.ktkapp.addressservice.models.Address;
 import com.ktkapp.addressservice.repository.AddressRepo;
-import com.ktkapp.addressservice.service.kafka.KafkaPublisher;
-import org.apache.hc.core5.net.Host;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,12 +20,12 @@ public class AddressServiceImpl implements AddressService{
 
     private ModelMapper modelMapper;
 
-    private KafkaPublisher kafkaPublisher;
+//    private KafkaPublisher kafkaPublisher;
     @Autowired
-    public AddressServiceImpl(AddressRepo addressRepo, ModelMapper modelMapper, KafkaPublisher kafkaPublisher) {
+    public AddressServiceImpl(AddressRepo addressRepo, ModelMapper modelMapper) {
         this.addressRepo = addressRepo;
         this.modelMapper = modelMapper;
-        this.kafkaPublisher = kafkaPublisher;
+//        this.kafkaPublisher = kafkaPublisher;
     }
 
     @Override

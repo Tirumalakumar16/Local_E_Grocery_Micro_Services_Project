@@ -6,7 +6,7 @@
 		<groupId>com.e_grocery</groupId>
 		<artifactId>Local-E-Grocery-Services</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		 <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.ktkapp</groupId>
 	<artifactId>address-service</artifactId>
@@ -93,10 +93,10 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka</artifactId>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.kafka</groupId>-->
+<!--			<artifactId>spring-kafka</artifactId>-->
+<!--		</dependency>-->
 <!--		<dependency>-->
 <!--			<groupId>org.springframework.kafka</groupId>-->
 <!--			<artifactId>spring-kafka-test</artifactId>-->
