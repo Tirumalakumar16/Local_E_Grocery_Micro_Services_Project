@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class ExceptionAdviser {
 
-    @ExceptionHandler(UsernameNotFoundException.class)
+    @ExceptionHandler({UsernameNotFoundException.class, PasswordNotMatchedException.class})
     public ResponseEntity<ErrorMessage> exceptionHandling1(Exception exception) {
         ErrorMessage errorMessage = new ErrorMessage();
         errorMessage.setErrorMessage(exception.getMessage());

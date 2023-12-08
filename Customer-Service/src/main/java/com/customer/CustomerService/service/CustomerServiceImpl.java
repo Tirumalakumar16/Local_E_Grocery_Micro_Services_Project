@@ -100,7 +100,7 @@ public class CustomerServiceImpl implements CustomerService {
         IdentityResponseDto identityResponseDto = identityFeignClient.getUserCredentials(userName);
 
         Customer customer = customerRepository.findByEmailId(identityResponseDto.getEmailId());
-        if(customer.getCustomerName() == null) {
+        if(customer.getCustomerName() == null ) {
             throw new CustomerDetailsNotAvailable("Please update customer details.....");
         }
 
