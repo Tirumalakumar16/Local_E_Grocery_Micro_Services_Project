@@ -31,10 +31,7 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-
-
         return new UserInfoDetails();
-
     }
 
     @Bean
@@ -50,12 +47,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
-                .authorizeHttpRequests((auth)->auth.requestMatchers("/register","/token","/validate","/identity","/resetpassword").permitAll())
-//                .sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .authenticationProvider(authenticationProvider())
-//                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests((auth)-> auth.requestMatchers("/register","/sign_in","/validate","/identity","/resetpassword").permitAll())
+                .authorizeHttpRequests((auth)->auth.requestMatchers("/**").authenticated())
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
     @Bean

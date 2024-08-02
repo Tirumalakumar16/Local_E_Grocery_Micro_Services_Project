@@ -15,11 +15,12 @@ import java.util.Date;
 @AllArgsConstructor
 @ToString
 public class ResponseProductDto {
-
+    private Long id;
     private String productName;
     private String shopName;
     private int quantity;
     private double price;
+    private String category;
     private ProductStatus available;
     private String emailId;
     private Date createdAt;

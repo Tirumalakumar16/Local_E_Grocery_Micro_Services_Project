@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins="http://localhost:5173/")
 public class CustomerCartController {
 
     private CustomerService customerService;
@@ -40,6 +41,12 @@ public class CustomerCartController {
         List<ResponseCartDto> productsFromCart = customerService.getAllProductsFromCart(userName);
 
         return new ResponseEntity<>(productsFromCart, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/customer/cart/{productName}")
+    public String deleteCart(@PathVariable("productName") String productName ,@RequestHeader("LoggedInUser") String userName) throws CartServiceUpdationException, CartDetailsNotFound {
+        customerService.deleteCartProduct(productName,userName);
+        return "Successfully deleted from Cart...!";
     }
 
 }

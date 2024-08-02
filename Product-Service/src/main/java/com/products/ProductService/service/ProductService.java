@@ -23,4 +23,8 @@ public interface ProductService {
     List<ResponseProductDto> getByEmail(String emailId) throws ProductsNotAvailableWithProductAndSellerEmail;
 
     void updateByCustomer(RequestCustomerProductDto requestCustomerProductDto);
+
+    List<ResponseProductDto> getAllProducts();
+
+    List<ResponseProductDto> getProducts(int pageNo);
 }

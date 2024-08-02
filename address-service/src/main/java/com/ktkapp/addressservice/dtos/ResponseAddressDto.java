@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 public class ResponseAddressDto {
+    private Long id;
     private String houseNumber;
     private String landMark;
     private String city;

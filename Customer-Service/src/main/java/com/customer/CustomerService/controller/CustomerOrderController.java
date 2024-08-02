@@ -7,6 +7,7 @@ import com.customer.CustomerService.dtos.order.ResponseCustOrderDto;
 import com.customer.CustomerService.exceptions.CartServiceUpdationException;
 import com.customer.CustomerService.exceptions.CustomerDetailsNotAvailable;
 import com.customer.CustomerService.service.CustomerService;
+import com.identityservice.service.security.JwtService;
 import com.ktkapp.addressservice.exceptions.AddressNotFoundWithEmail;
 import com.orders.OrdersService.dtos.ResponseOrderDto;
 import com.orders.OrdersService.dtos.customer.ResponseOrderCustomerDateDto;
@@ -17,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@CrossOrigin(origins="http://localhost:5173/")
 @RestController
 public class CustomerOrderController {
 

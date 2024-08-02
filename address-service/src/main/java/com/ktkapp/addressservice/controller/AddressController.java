@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@CrossOrigin(origins="http://localhost:5173/")
 @RestController
 public class AddressController {
 
@@ -24,11 +24,14 @@ public class AddressController {
         return addressService.saveAddress(requestAddressDto);
     }
 
+    //Needs to be write the correct method name and parameter lets try with loggedinuser
+    // remove identity service and jwt service
+    // This is changed to email
     @GetMapping("/addresses/{email}")
-    public List<ResponseAddressDto> getAddresses(@PathVariable("email")String emailId) throws AddressNotFoundWithEmail {
+    public List<ResponseAddressDto> getAddresses(@PathVariable("email")String email) throws AddressNotFoundWithEmail {
 
 
-           return addressService.getAddress(emailId);
+           return addressService.getAddress(email);
 
     }
 

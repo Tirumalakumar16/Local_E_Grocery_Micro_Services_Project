@@ -10,6 +10,8 @@ import com.products.ProductService.models.ProductStatus;
 import com.products.ProductService.repository.ProductRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -50,7 +52,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public List<ResponseProductCustDto> getProductsByShopName(String shopName) throws ProductsNotAvailableWithShopName {
-        List<Product> products = productRepository.findByShopName(shopName);
+        List<Product> products = productRepository.findProductByShopNameLike(shopName);
 
         if(products.isEmpty()) {
             throw new ProductsNotAvailableWithShopName("Provided shopName doesn't exists with ");
@@ -58,6 +60,8 @@ public class ProductServiceImpl implements ProductService{
 
      return Arrays.asList(modelMapper.map(products, ResponseProductCustDto[].class));
     }
+
+
 
 
     @Override
@@ -125,5 +129,23 @@ public class ProductServiceImpl implements ProductService{
     public void updateByCustomer(RequestCustomerProductDto requestCustomerProductDto) {
 
          productRepository.updateQuantity(requestCustomerProductDto.getQuantity(),requestCustomerProductDto.getProductName(),requestCustomerProductDto.getShopName());
+    }
+
+    @Override
+    public List<ResponseProductDto> getAllProducts() {
+        List<Product> products = productRepository.findAll();
+
+        return Arrays.asList(modelMapper.map(products, ResponseProductDto[].class));
+    }
+
+    @Override
+    public List<ResponseProductDto> getProducts(int pageNo) {
+
+        int pageSize = 20;
+        Pageable page = PageRequest.of(pageNo, pageSize);
+        List<Product> products = productRepository.findAll(page).getContent();
+
+        return Arrays.asList(modelMapper.map(products, ResponseProductDto[].class));
+
     }
 }

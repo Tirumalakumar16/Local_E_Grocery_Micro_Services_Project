@@ -30,7 +30,8 @@ public class JwtUtil {
         return claimsResolver.apply(claims);
    }
 
-   private Claims extractAllClaims(String token) {return Jwts
+   private Claims extractAllClaims(String token) {
+        return Jwts
            .parserBuilder()
                 .setSigningKey(getSignKey())
                 .build()

@@ -17,8 +17,8 @@ import java.util.List;
 public class AddressServiceImpl implements AddressService{
 
     private AddressRepo addressRepo;
-
     private ModelMapper modelMapper;
+
 
 //    private KafkaPublisher kafkaPublisher;
     @Autowired
@@ -50,6 +50,7 @@ public class AddressServiceImpl implements AddressService{
 
     @Override
     public List<ResponseAddressDto> getAddress(String email) throws AddressNotFoundWithEmail {
+
 
         List<Address> address = addressRepo.findAllByEmailId(email);
 

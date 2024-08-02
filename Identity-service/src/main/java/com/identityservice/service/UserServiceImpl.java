@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService{
                 throw new IllegalArgumentException("please enter valid UserName.");
             }
             userCredentials1.setUsername(userCredentials.getUsername());
-            userCredentials1.setRoles(userCredentials.getRole());
+            userCredentials1.setRoles(userCredentials.getRole().toUpperCase());
             userCredentials1.setPassword(passwordEncoder.encode(userCredentials.getPassword()));
             if(userCredentials.getEmailId().length()<3 || !(userCredentials.getEmailId().contains("@"))) {
                 throw new IllegalArgumentException("please enter valid email ID.");

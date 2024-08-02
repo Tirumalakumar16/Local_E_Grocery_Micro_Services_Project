@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins="http://localhost:5173/")
 public class CustomerAddressController {
 
 
@@ -21,7 +22,7 @@ public class CustomerAddressController {
     }
 
     @PostMapping("customer/address")// working
-    public ResponseAddressDto saveAddresForUser(@RequestBody RequestAddressDto requestAddressDto, @RequestHeader("loggedInUser") String userName)  {
+    public ResponseAddressDto saveAddressForUser(@RequestBody RequestAddressDto requestAddressDto, @RequestHeader("loggedInUser") String userName)  {
 
         return customerService.saveAddress(requestAddressDto,userName);
     }
@@ -33,6 +34,8 @@ public class CustomerAddressController {
         return customerService.getAddressesFromAddressService(username);
 
     }
+
+    // Delete By id
     @DeleteMapping ("/customer/address")
     public String deleteAddressWithZip(@RequestBody DeleteAddressRequest deleteAddressRequest, @RequestHeader("LoggedInUser") String userName) throws AddressNotFoundWithEmail {
 
