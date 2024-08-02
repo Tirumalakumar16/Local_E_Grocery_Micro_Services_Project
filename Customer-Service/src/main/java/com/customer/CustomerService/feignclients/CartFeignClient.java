@@ -22,7 +22,7 @@ public interface CartFeignClient {
     @PutMapping("/cart")
     public ResponseEntity<ResponseCartDto> updatecart(@RequestBody UpdateCartDto updateCartDto) throws CartDetailsNotFound;
 
-    @DeleteMapping("/add_cart/{product}/{email}")
+    @DeleteMapping("/cart/{product}/{email}")
     public ResponseEntity<String> deleteCartProduct( @PathVariable("product") String product,@PathVariable("email") String email);
 
 

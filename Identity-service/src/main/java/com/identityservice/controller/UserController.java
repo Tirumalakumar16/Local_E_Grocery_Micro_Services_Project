@@ -13,9 +13,8 @@ import org.springframework.security.core.AuthenticatedPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-
+@CrossOrigin(origins="http://localhost:5173/")
 @RestController
-
 public class UserController {
 
     private UserService userService;
@@ -34,7 +33,7 @@ public class UserController {
 
         return userService.saveUser(request);
     }
-    @PostMapping("/token")
+    @PostMapping("/sign_in")
     public String generateToken(@RequestBody AuthRequest authRequest) {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(),
                 authRequest.getPassword()));

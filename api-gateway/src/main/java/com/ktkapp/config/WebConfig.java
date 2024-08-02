@@ -1,6 +1,5 @@
-package com.cartservice.CartService.config;
+package com.ktkapp.config;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +12,7 @@ import org.springframework.web.filter.CorsFilter;
 import java.util.Arrays;
 
 @Configuration
-public class AppConfig {
+public class WebConfig {
     @Bean
     public FilterRegistrationBean corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -42,9 +41,5 @@ public class AppConfig {
         FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
         bean.setOrder(-102);
         return bean;
-    }
-    @Bean
-    public ModelMapper getMapper() {
-        return new ModelMapper();
     }
 }

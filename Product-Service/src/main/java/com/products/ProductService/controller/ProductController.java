@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins="http://localhost:5173/")
 public class ProductController {
 
     private ProductService productService;
@@ -32,11 +33,22 @@ public class ProductController {
 
         return productService.getProductsByShopName(shopName);
     }
+
+
+    @GetMapping("/products")
+    public List<ResponseProductDto> getAllProducts(){
+        return productService.getAllProducts();
+    }
      @GetMapping("/product/name/{productName}")
     public ResponseProductCustDto getProduct(@PathVariable("productName") String productName) throws ProductsNotAvailableWithProductName {
 
         return productService.getProduct(productName);
      }
+
+    @GetMapping("/product/{pageNo}")
+    public List<ResponseProductDto> getProducts(@PathVariable("pageNo") int pageNo) {
+        return productService.getProducts(pageNo);
+    }
 
     @GetMapping("/product/{productName}/{shopEmailId}")
     public ResponseProductDto getProductBySellerName(@PathVariable("productName") String productName,@PathVariable("shopEmailId") String emailId) throws ProductsNotAvailableWithShopName {

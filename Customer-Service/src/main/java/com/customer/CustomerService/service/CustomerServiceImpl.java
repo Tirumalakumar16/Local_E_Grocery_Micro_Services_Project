@@ -104,7 +104,16 @@ public class CustomerServiceImpl implements CustomerService {
             throw new CustomerDetailsNotAvailable("Please update customer details.....");
         }
 
-        return modelMapper.map(customer, ResponseCustomerDto.class);
+        ResponseCustomerDto responseCustomerDto = new ResponseCustomerDto();
+        responseCustomerDto.setCustomerName(customer.getCustomerName());
+        responseCustomerDto.setMobile(customer.getMobile());
+        responseCustomerDto.setEmailId(customer.getEmailId());
+        responseCustomerDto.setActive(customer.isActive());
+        responseCustomerDto.setUsername(identityResponseDto.getUsername());
+        responseCustomerDto.setId(customer.getId());
+
+
+        return responseCustomerDto;
     }
 
     @Override
@@ -353,5 +362,24 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         return orderFeignClient.getAllCustomerOrdersOnDate(identityResponseDto.getEmailId());
+    }
+
+
+    @Override
+    public List<ResponseProductDto> getAllProducts() {
+        return productFeignClient.getAllProducts();
+    }
+
+    @Override
+    public List<ResponseProductDto> getProducts(int pageNo) {
+        return productFeignClient.getProducts(pageNo);
+    }
+
+    @Override
+    public void deleteCartProduct(String productName, String userName) {
+        IdentityResponseDto identityResponseDto = identityFeignClient.getUserCredentials(userName);
+
+        cartFeignClient.deleteCartProduct(productName,identityResponseDto.getEmailId());
+
     }
 }

@@ -12,8 +12,10 @@ import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product,Long> {
-    @Query(value = "select * from grocery_product.product p where p.shop_name=?1",nativeQuery = true)
-    List<Product> findByShopName(String shopName);
+//    @Query( "select productName,shopName,quantity,price,available,emailId from Product where Product .shopName like %?1%")
+//    List<Product> findByShopName(String shopName);
+
+    List<Product> findProductByShopNameLike(String shopName);
     @Query(value = "select * from grocery_product.product p where p.product_name=?1",nativeQuery = true)
     Product findByProductName(String productName);
 

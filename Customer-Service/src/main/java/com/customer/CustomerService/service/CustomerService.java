@@ -21,6 +21,7 @@ import com.orders.OrdersService.exceptions.PaymentFailedException;
 import com.payment.PaymentService.dtos.ResponsePaymentDto;
 import com.payment.PaymentService.exceptions.PaymentsNotFound;
 import com.products.ProductService.dtos.ResponseProductCustDto;
+import com.products.ProductService.dtos.ResponseProductDto;
 import com.products.ProductService.exceptions.ProductsNotAvailableWithProductName;
 import com.products.ProductService.exceptions.ProductsNotAvailableWithShopName;
 import org.springframework.http.ResponseEntity;
@@ -71,4 +72,10 @@ public interface CustomerService {
     List<ResponseOrdersCustomerTotalDto> getCustomersTotalAmount(String userName) throws CustomerDetailsNotAvailable, OrdersNotPlacedException;
 
     List<ResponseOrderCustomerDateDto> getCustomersTotalAndDate(String userName) throws CustomerDetailsNotAvailable, OrdersNotPlacedException;
+
+    List<ResponseProductDto> getAllProducts();
+
+    List<ResponseProductDto> getProducts(int pageNo);
+
+    void deleteCartProduct(String productName, String userName);
 }

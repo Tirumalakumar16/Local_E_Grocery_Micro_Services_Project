@@ -15,6 +15,8 @@ public interface CartRepository extends JpaRepository<Cart,Long> {
     List<Cart> findByEmailId(String email);
     @Query(value = "select * from grocery_cart.cart c where c.email_id=?1 and c.product_name=?2",nativeQuery = true)
     Cart findByEmailIdAndProductName(String emailId, String productName);
+    @Modifying
+    @Transactional
     @Query(value = "delete from grocery_cart.cart c where c.email_id=?1 and c.product_name=?2",nativeQuery = true)
     void deleteByEmailAndProductName(String email, String product);
     @Modifying

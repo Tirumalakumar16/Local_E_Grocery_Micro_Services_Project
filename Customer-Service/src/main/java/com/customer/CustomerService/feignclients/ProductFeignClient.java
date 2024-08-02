@@ -1,6 +1,7 @@
 package com.customer.CustomerService.feignclients;
 
 import com.products.ProductService.dtos.ResponseProductCustDto;
+import com.products.ProductService.dtos.ResponseProductDto;
 import com.products.ProductService.exceptions.ProductsNotAvailableWithProductName;
 import com.products.ProductService.exceptions.ProductsNotAvailableWithShopName;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -18,6 +19,11 @@ public interface ProductFeignClient {
     @GetMapping("/product/name/{productName}")
     public ResponseProductCustDto getProduct(@PathVariable("productName") String productName) throws ProductsNotAvailableWithProductName;
 
+    @GetMapping("/products")
+    public List<ResponseProductDto> getAllProducts();
+
+    @GetMapping("/product/{pageNo}")
+    public List<ResponseProductDto> getProducts(@PathVariable("pageNo") int pageNo);
 
 
 

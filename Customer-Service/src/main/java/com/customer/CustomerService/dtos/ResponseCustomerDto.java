@@ -10,11 +10,11 @@ import java.util.Date;
 @ToString
 @Builder
 public class ResponseCustomerDto {
-
+    private Long id;
     private String customerName;
     private String mobile;
     private String emailId;
-    private Date createdOn;
-    private Date updatedOn;
+
     private boolean isActive;
+    private String username;
 }

@@ -17,4 +17,5 @@ public class ResponseCartDto {
     private String emailId;
     private Date createdAt;
     private Date updatedOn;
+    private Long id;
 }

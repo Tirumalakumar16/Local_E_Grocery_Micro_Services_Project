@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins="http://localhost:5173/")
 public class CustomerController {
 
     private CustomerService customerService;
@@ -28,16 +29,13 @@ public class CustomerController {
     @GetMapping("/customer")
     public ResponseCustomerDto getCustomer(@RequestHeader("LoggedInUser") String userName) throws CustomerDetailsNotAvailable {
 
-
             return customerService.getCustomer(userName);
 
     }
 
     @GetMapping("/customers")
+
     public List<ResponseCustomerDto> getAllCustomers(@RequestHeader("LoggedInUser") String userName) throws CustomerDetailsNotAvailable {
-
-
-
             return customerService.getAll(userName);
 
     }
