@@ -1,5 +1,7 @@
 package com.cartservice.CartService.service;
 
+import com.cartservice.CartService.config.KafkaPublisherClient;
+import com.cartservice.CartService.dtos.KafkaMessage;
 import com.cartservice.CartService.dtos.RequestCartDto;
 import com.cartservice.CartService.dtos.ResponseCartDto;
 import com.cartservice.CartService.dtos.UpdateCartDto;
@@ -7,6 +9,7 @@ import com.cartservice.CartService.exceptions.CartDetailsNotFound;
 import com.cartservice.CartService.models.Cart;
 import com.cartservice.CartService.repository.CartRepository;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,10 +23,15 @@ public class CartServiceImpl implements CartService{
     private CartRepository cartRepository;
 
     private ModelMapper modelMapper;
+
+    private KafkaPublisherClient kafkaPublisherClient;
+    private ObjectMapper objectMapper;
     @Autowired
-    public CartServiceImpl(CartRepository cartRepository, ModelMapper modelMapper) {
+    public CartServiceImpl(CartRepository cartRepository, ModelMapper modelMapper, KafkaPublisherClient kafkaPublisherClient, ObjectMapper objectMapper) {
         this.cartRepository = cartRepository;
         this.modelMapper = modelMapper;
+        this.kafkaPublisherClient = kafkaPublisherClient;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -31,6 +39,21 @@ public class CartServiceImpl implements CartService{
 
         Cart cart = mapToCart(requestCartDto);
         Cart cart1 = cartRepository.save(cart);
+
+        // kafka message to send email to user for product added to cart
+        KafkaMessage kafkaMessage = new KafkaMessage();
+        kafkaMessage.setFrom("grocerystore4169@gmail.com");
+        kafkaMessage.setSubject("Product added to Cart");
+        kafkaMessage.setTo(requestCartDto.getEmailId());
+        kafkaMessage.setBody("\n\n\n" +
+                ""+requestCartDto.getProductName()+" is added to your cart ....\n\n" +
+                "get Product by Order Now ... Hurry up!!! \n\n\n"+
+                "Team Grocery Store");
+        try {
+            kafkaPublisherClient.sendMessage("productAddedToCart", objectMapper.writeValueAsString(kafkaMessage));
+        } catch (Exception e) {
+            e.getStackTrace();
+        }
 
         return modelMapper.map(cart1, ResponseCartDto.class);
     }

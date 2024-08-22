@@ -1,5 +1,7 @@
 package com.ktkapp.addressservice.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ktkapp.addressservice.config.KafkaPublisherClient;
 import com.ktkapp.addressservice.dtos.*;
 import com.ktkapp.addressservice.exceptions.AddressNotFoundWithEmail;
 import com.ktkapp.addressservice.models.Address;
@@ -19,13 +21,16 @@ public class AddressServiceImpl implements AddressService{
     private AddressRepo addressRepo;
     private ModelMapper modelMapper;
 
+    private ObjectMapper objectMapper;
 
-//    private KafkaPublisher kafkaPublisher;
+
+    private KafkaPublisherClient kafkaPublisherClient;
     @Autowired
-    public AddressServiceImpl(AddressRepo addressRepo, ModelMapper modelMapper) {
+    public AddressServiceImpl(AddressRepo addressRepo, ModelMapper modelMapper, ObjectMapper objectMapper, KafkaPublisherClient kafkaPublisherClient) {
         this.addressRepo = addressRepo;
         this.modelMapper = modelMapper;
-//        this.kafkaPublisher = kafkaPublisher;
+        this.objectMapper = objectMapper;
+        this.kafkaPublisherClient = kafkaPublisherClient;
     }
 
     @Override
@@ -44,7 +49,24 @@ public class AddressServiceImpl implements AddressService{
         address.setCreatedAt(new Date());
 
         address =addressRepo.save(address);
-        //   kafkaPublisher.sendMessage("Address saved successfully for email : "+ requestAddressDto.getEmailRequest().getEmailId());
+
+        KafkaMessage kafkaMessage = new KafkaMessage();
+        kafkaMessage.setTo(requestAddressDto.getEmailRequest().getEmailId());
+        kafkaMessage.setFrom("grocerystore4169@gmail.com");
+        kafkaMessage.setSubject("New Address is Saved");
+        kafkaMessage.setBody("New address is saved successfully , please confirm the details \n \n" +
+                "House Number : " + requestAddressDto.getHouseNumber() +"\n"+
+                "City : "+ requestAddressDto.getCity()+"\n"+
+                "Land Mark : "+requestAddressDto.getLandMark() +"\n\n\n"+
+                "Thanks , Team Grocery Store!!!"
+        );
+        try {
+            kafkaPublisherClient.sendMessage("newAddress", objectMapper.writeValueAsString(kafkaMessage));
+        } catch (Exception e ) {
+            System.out.println("something Wrong in address service");
+        }
+
+
         return modelMapper.map(address, ResponseAddressDto.class);
     }
 
@@ -69,8 +91,18 @@ public class AddressServiceImpl implements AddressService{
         if(address ==  null) {
             throw new AddressNotFoundWithEmail("House Number is not existed for email "+deleteAddress.getEmailAddressRequest().getEmailId());
         }
-
+        KafkaMessage kafkaMessage = new KafkaMessage();
+        kafkaMessage.setTo(deleteAddress.getEmailAddressRequest().getEmailId());
+        kafkaMessage.setFrom("grocerystore4169@gmail.com");
+        kafkaMessage.setSubject("Address deleted");
+        kafkaMessage.setBody("House Number : "+ deleteAddress.getHouseNumber()+" address is deleted successfully , please check if not deleted by you ....\n\n\n\n\n"+"Team Grocery Store!!!.");
          addressRepo.deleteByZipAndEmailId(deleteAddress.getZip(),deleteAddress.getEmailAddressRequest().getEmailId(),deleteAddress.getHouseNumber());
+
+        try {
+            kafkaPublisherClient.sendMessage("newAddress", objectMapper.writeValueAsString(kafkaMessage));
+        } catch (Exception e ) {
+            System.out.println("something Wrong in address service");
+        }
       //   kafkaPublisher.sendMessage("Address is deleted from your account...");
          return "Address Deleted successfully from your Account.... ";
     }

@@ -1,9 +1,8 @@
 package com.orders.OrdersService.service;
 
-import com.orders.OrdersService.dtos.RequestOrderDto;
-import com.orders.OrdersService.dtos.ResponseOrderDto;
-import com.orders.OrdersService.dtos.ResponseOrderShopDto;
-import com.orders.OrdersService.dtos.ResponseOrdersShopTotalDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.orders.OrdersService.config.KafkaPublisherClient;
+import com.orders.OrdersService.dtos.*;
 import com.orders.OrdersService.dtos.customer.ResponseOrderCustomerDateDto;
 import com.orders.OrdersService.dtos.customer.ResponseOrdersCustomerTotalDto;
 import com.orders.OrdersService.exceptions.OrdersNotPlacedException;
@@ -36,17 +35,22 @@ public class OrderServiceImpl implements OrderService{
 
     private ProductFeignClient productFeignClient;
 
+    private ObjectMapper objectMapper;
+    private KafkaPublisherClient kafkaPublisherClient;
+
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository, ModelMapper modelMapper, PaymentFeignClient paymentFeignClient, ProductFeignClient productFeignClient) {
+    public OrderServiceImpl(OrderRepository orderRepository, ModelMapper modelMapper, PaymentFeignClient paymentFeignClient, ProductFeignClient productFeignClient, ObjectMapper objectMapper, KafkaPublisherClient kafkaPublisherClient) {
         this.orderRepository = orderRepository;
         this.modelMapper = modelMapper;
         this.paymentFeignClient = paymentFeignClient;
         this.productFeignClient = productFeignClient;
+        this.objectMapper = objectMapper;
+        this.kafkaPublisherClient = kafkaPublisherClient;
     }
 
     @Override
     public String orderFromCart(List<RequestOrderDto> requestOrderDto) throws PaymentFailedException, OrdersNotPlacedException, ProductsNotAvailableWithProductName {
-
+            int count =0;
         List<OrderDetails> orderDetails = new ArrayList<>();
         for(RequestOrderDto requestOrderDto1: requestOrderDto) {
 
@@ -63,6 +67,7 @@ public class OrderServiceImpl implements OrderService{
             orderDetails1.setProductName(requestOrderDto1.getProductName());
             
             orderDetails.add(orderDetails1);
+            count++;
 
         }
 
@@ -118,11 +123,27 @@ public class OrderServiceImpl implements OrderService{
 
         List<OrderDetails> orderDetails1 = orderRepository.saveAll(updatedOrders);
 
+        KafkaMessage kafkaMessage = new KafkaMessage();
+        kafkaMessage.setFrom("grocerystore4169@gmail.com");
+        kafkaMessage.setTo(requestOrderDto.get(0).getCustomerEmailId());
+        kafkaMessage.setSubject("Order Placed Successfully");
+        kafkaMessage.setBody("Order Placed Successfully, Your Transaction Id is "+responsePaymentDto.getTransactionId()+"\n\n" +
+                "Total products ordered is  "+ count+""+"\n" +
+                "Total Amount is "+responsePaymentDto.getTotalAmount()+"\n\n" +""
+                 +
+                "Thank you for shopping with us....\n\n\n"+"" +
+                "Team Grocery Store!!!.");
+
+
         for (RequestCustomerProductDto requestCustomerProductDto : updatedListForCustomerUpdation) {
 
                  productFeignClient.updateByCustomer(requestCustomerProductDto);
         }
-
+        try {
+            kafkaPublisherClient.sendMessage("order", objectMapper.writeValueAsString(kafkaMessage));
+        } catch (Exception e) {
+            e.getStackTrace();
+        }
         return "Order Placed successfully ......";
         
 

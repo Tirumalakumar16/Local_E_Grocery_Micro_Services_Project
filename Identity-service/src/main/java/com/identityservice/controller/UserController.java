@@ -1,5 +1,7 @@
 package com.identityservice.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.identityservice.config.KafkaPublisherClient;
 import com.identityservice.dtos.*;
 import com.identityservice.exceptions.PasswordNotMatchedException;
 import com.identityservice.exceptions.UserNotFoundException;
@@ -21,11 +23,18 @@ public class UserController {
     private JwtService jwtService;
 
     private AuthenticationManager authenticationManager;
-    @Autowired
-    public UserController(UserService userService, JwtService jwtService, AuthenticationManager authenticationManager) {
+
+    private KafkaPublisherClient kafkaPublisherClient;
+
+    private ObjectMapper objectMapper;
+
+
+    public UserController(UserService userService, JwtService jwtService, AuthenticationManager authenticationManager, KafkaPublisherClient kafkaPublisherClient, ObjectMapper objectMapper) {
         this.userService = userService;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
+        this.kafkaPublisherClient = kafkaPublisherClient;
+        this.objectMapper = objectMapper;
     }
 
     @PostMapping("/register")
@@ -37,6 +46,7 @@ public class UserController {
     public String generateToken(@RequestBody AuthRequest authRequest) {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(),
                 authRequest.getPassword()));
+
 
         if(authenticate.isAuthenticated()) {
             return jwtService.generateToken(authRequest.getUsername());
