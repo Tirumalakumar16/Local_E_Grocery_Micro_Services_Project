@@ -1,16 +1,17 @@
 package com.identityservice.service;
 
-import com.identityservice.dtos.RequestOldToNewPassword;
-import com.identityservice.dtos.RequestResetPasswordDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.identityservice.config.KafkaPublisherClient;
+import com.identityservice.dtos.*;
 import com.identityservice.exceptions.PasswordNotMatchedException;
 import com.identityservice.exceptions.UserNotFoundException;
-import com.identityservice.dtos.IdentityResponseDto;
-import com.identityservice.dtos.UserCredentialsRequest;
 import com.identityservice.model.UserCredentials;
 import com.identityservice.repository.UserRepository;
 import com.identityservice.service.security.JwtService;
+import org.aspectj.bridge.Message;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.MimeMailMessage;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,16 +28,17 @@ public class UserServiceImpl implements UserService{
 
     private JwtService jwtService;
     @Autowired
-    private ModelMapper modelMapper;
+    private ObjectMapper modelMapper;
 
-
-
+    private KafkaPublisherClient kafkaPublisherClient;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService, KafkaPublisherClient kafkaPublisherClient) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+
+        this.kafkaPublisherClient = kafkaPublisherClient;
     }
 
     @Override
@@ -59,8 +61,17 @@ public class UserServiceImpl implements UserService{
 
 
         userRepository.save(userCredentials1);
-
-        return "Registered succesfully.... enjoy E-cart service ...!";
+        KafkaMessage kafkaMessage = new KafkaMessage();
+        kafkaMessage.setTo(userCredentials.getEmailId());
+        kafkaMessage.setFrom("grocerystore4169@gmail.com");
+        kafkaMessage.setSubject("Welcome to Local Grocery Store");
+        kafkaMessage.setBody("Thanks for registering with Grocery Store your userId is "+userCredentials.getUsername()+" enjoy the Shopping ......."+'\n'+"Team Grocery Store!!!." );
+        try {
+            kafkaPublisherClient.sendMessage("userSignUp", modelMapper.writeValueAsString(kafkaMessage));
+        } catch (Exception e) {
+            System.out.println("Something wron in users service...");
+        }
+        return "Registered successfully.... enjoy E-cart service ...!";
     }
 
 

@@ -84,7 +84,7 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setEmailId(identityResponseDto.getEmailId());
         customer.setCreatedOn(new Date());
         customer.setUpdatedOn(new Date());
-        if(!(requestCustomerDto.getMobile().length() == 10)){
+        if(!(requestCustomerDto.getMobile().length() == 10)) {
             throw new IllegalArgumentException("Please enter valid mobile number....");
         }
         customer.setMobile(requestCustomerDto.getMobile());
@@ -217,6 +217,7 @@ public class CustomerServiceImpl implements CustomerService {
         if(!authorization.contains("ROLE_CUSTOMER")){
             throw  new CartServiceUpdationException("you are not authorize to use Cart Service in www.localGrocery.com. Please sign up as Customer to use Cart...");
         }
+
         ResponseProductCustDto responseProductDto = productFeignClient.getProduct(requestCustCartDto.getProductName());
 
         RequestCartDto requestCartDto = new RequestCartDto();
@@ -271,13 +272,13 @@ public class CustomerServiceImpl implements CustomerService {
 
         List<String> authorization = Arrays.stream(identityResponseDto.getRoles().split(",")).toList();
 
-        if(!authorization.contains("ROLE_CUSTOMER")){
+        if(!authorization.contains("ROLE_CUSTOMER")) {
             throw  new CartServiceUpdationException("you are not authorize to Order products in www.localGrocery.com. Please sign up as Customer to place orders...");
         }
 
         Customer responseCustomerDto = customerRepository.findByEmailId(identityResponseDto.getEmailId());
 
-        List<ResponseCartDto> responseCartDtos =cartFeignClient.getAllCart(identityResponseDto.getEmailId());
+        List<ResponseCartDto> responseCartDtos = cartFeignClient.getAllCart(identityResponseDto.getEmailId());
 
         ResponseAddressDto address = addressFeignClient.getByHouseNumber(requestAddressCustDto.getHouseNumber());
 

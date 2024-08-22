@@ -1,5 +1,7 @@
 package com.shop.ShopService.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.identityservice.dtos.IdentityResponseDto;
 import com.ktkapp.addressservice.dtos.ResponseAddressDto;
 import com.orders.OrdersService.dtos.ResponseOrderDto;
@@ -9,6 +11,8 @@ import com.products.ProductService.dtos.RequestOwnerDto;
 import com.products.ProductService.dtos.RequestProductDto;
 import com.products.ProductService.dtos.ResponseProductDto;
 import com.products.ProductService.exceptions.ProductsNotAvailableWithProductAndSellerEmail;
+import com.shop.ShopService.config.KafkaPublisherClient;
+import com.shop.ShopService.dtos.KafkaMessage;
 import com.shop.ShopService.dtos.RequestShopDtos;
 import com.shop.ShopService.dtos.ResponseShopCustDto;
 import com.shop.ShopService.dtos.ResponseShopDto;
@@ -44,15 +48,18 @@ public class ShopServiceImpl implements ShopService{
 
     private ProductFeignClient productFeignClient;
     private OrderFeignClient orderFeignClient;
-
+    private ObjectMapper objectMapper;
+    private KafkaPublisherClient kafkaPublisherClient;
     @Autowired
-    public ShopServiceImpl(ShopRepository shopRepository, ModelMapper modelMapper, IdentityFeignClient identityFeignClient, AddressFeignClient addressFeignClient, ProductFeignClient productFeignClient, OrderFeignClient orderFeignClient) {
+    public ShopServiceImpl(ShopRepository shopRepository, ModelMapper modelMapper, IdentityFeignClient identityFeignClient, AddressFeignClient addressFeignClient, ProductFeignClient productFeignClient, OrderFeignClient orderFeignClient, ObjectMapper objectMapper, KafkaPublisherClient kafkaPublisherClient) {
         this.shopRepository = shopRepository;
         this.modelMapper = modelMapper;
         this.identityFeignClient = identityFeignClient;
         this.addressFeignClient = addressFeignClient;
         this.productFeignClient = productFeignClient;
         this.orderFeignClient = orderFeignClient;
+        this.objectMapper = objectMapper;
+        this.kafkaPublisherClient = kafkaPublisherClient;
     }
 
     @Override
@@ -69,6 +76,23 @@ public class ShopServiceImpl implements ShopService{
         Shop shop = mapToShop(requestShopDtos,responseAddressDto,identityResponseDto);
 
         Shop shop1 = shopRepository.save(shop);
+
+        KafkaMessage kafkaMessage = new KafkaMessage();
+        kafkaMessage.setTo(identityResponseDto.getEmailId());
+        kafkaMessage.setSubject("Shop Registration");
+        kafkaMessage.setBody("Your shop is registered successfully with www.localGrocery.com\n\n" +
+                "Shop Name: "+shop1.getShopName()+"\n" +
+                "Owner Name: "+shop1.getOwnerName()+"\n" +
+                "City: "+shop1.getCity()+"\n" +
+                "Mobile: "+shop1.getMobile()+"\n" +
+                "Email: "+shop1.getEmailId()+"\n\n" +
+                "Thank you for registering with us..");
+        try {
+            kafkaPublisherClient.sendMessage("shopRegistration",objectMapper.writeValueAsString(kafkaMessage));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         return modelMapper.map(shop1, ResponseShopDto.class);
 

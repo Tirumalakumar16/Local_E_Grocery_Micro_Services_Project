@@ -1,6 +1,8 @@
 package com.products.ProductService.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.discovery.converters.Auto;
+import com.products.ProductService.config.KafkaPublisherClient;
 import com.products.ProductService.dtos.*;
 import com.products.ProductService.exceptions.ProductsNotAvailableWithProductAndSellerEmail;
 import com.products.ProductService.exceptions.ProductsNotAvailableWithProductName;
@@ -25,10 +27,14 @@ public class ProductServiceImpl implements ProductService{
     private ProductRepository productRepository;
 
     private ModelMapper modelMapper;
+    private ObjectMapper objectMapper;
+    public KafkaPublisherClient kafkaPublisherClient;
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, ModelMapper modelMapper) {
+    public ProductServiceImpl(ProductRepository productRepository, ModelMapper modelMapper, ObjectMapper objectMapper, KafkaPublisherClient kafkaPublisherClient) {
         this.productRepository = productRepository;
         this.modelMapper = modelMapper;
+        this.objectMapper = objectMapper;
+        this.kafkaPublisherClient = kafkaPublisherClient;
     }
 
     @Override
@@ -46,6 +52,20 @@ public class ProductServiceImpl implements ProductService{
 
         Product product1 = productRepository.save(product);
 
+        KafkaMessage kafkaMessage = new KafkaMessage();
+        kafkaMessage.setTo(requestProductDto.getEmailId());
+        kafkaMessage.setSubject("Product Added");
+        kafkaMessage.setBody("Product Added Successfully\n\n" +
+                "Product Name : "+requestProductDto.getProductName()+"\n" +"" +
+                "Price : "+requestProductDto.getPrice()+"\n" +"" +
+                "Quantity : "+requestProductDto.getQuantity()+"\n" +"" +"" +
+                "Shop Name : "+requestProductDto.getShopName()+"\n" +"" +"" +
+                "Category : "+requestProductDto.getCategory()+"\n" +"" +"");
+        try {
+        kafkaPublisherClient.sendMessage("productAdded",objectMapper.writeValueAsString(kafkaMessage));
+        }   catch (Exception e) {
+            e.getStackTrace();
+        }
         return modelMapper.map(product1, ResponseProductDto.class);
     }
 
